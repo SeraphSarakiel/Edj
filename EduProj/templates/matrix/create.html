@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Create{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div>
+        <input name="value1" id="value1" required>
+        <input name="value2" id="value2" required>
+        <input name="value3" id="value3" required>
+    </div>
+    <div>
+        <input name="value4" id="value4" required>
+        <input name="value5" id="value5" required>
+        <input name="value6" id="value6" required>
+    </div>
+    <div>
+        <input name="value7" id="value7" required>
+        <input name="value8" id="value8" required>
+        <input name="value9" id="value9" required>
+    </div>
+
+    <input type="submit" value="Create">
+  </form>
+{% endblock %}

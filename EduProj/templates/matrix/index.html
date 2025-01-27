@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Posts{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  {% for matrix in matrices %}
+    
+    <article class="post">
+      <header>
+        <div>
+          <h1>Matrix</h1>
+        </div>
+      </header>
+      <form method="post" name="">
+      {% for i in range(3) %}
+      <div >
+        {% for j in range(3) %}
+        <input class="entry" name="value{{i*3+j}}" value={{ matrix[i][j] }}>
+        {% endfor %}
+      </div>
+    
+      {% endfor %}
+      <input class="invis" type="submit">
+    </form>
+    </article>
+    
+    
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+  
+{% endblock %}
