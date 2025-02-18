@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}{{ session["name"] }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    
+    <article class="post">
+      <header>
+        <div>
+          <h1>Step {{session["current"] + 1}} </h1>
+        </div>
+      </header>
+      <form method="post" name="">
+      {% for i in range(cols) %}
+      <div >
+        {% for j in range(rows) %}
+        <input class="entry" name="value{{i*3+j}}" value={{ matrix[i][j] }}>
+        {% endfor %}
+      </div>
+    
+      {% endfor %}
+      <input class="invis" type="submit">
+    </form>
+    <div> {{ comment }} </div>
+    </article>
+    
+    
+    
+      <hr>
+  {%if session["order"] %}
+  <div style="padding: 20px 0 20px 0">
+    <a href={{url_for("state.previous")}} style="height: 50px; float: left; margin: 0 0 20px 0;">Previous</a>
+    <a href={{url_for("state.next")}} style="float:right; height: 50px; margin: 0 20px 0 0;">Next</a>
+  </div>
+  {% endif %}
+  
+{% endblock %}

@@ -28,12 +28,19 @@ def create_app(test_config=None):
     def entry():
         return "Welcome traveller"
 
+    
 
     from . import db
     db.init_app(app)
     
     from . import matrix
     app.register_blueprint(matrix.bp)
-    app.add_url_rule("/", endpoint="index")
+    
+
+    from . import state
+    app.register_blueprint(state.bp)
+    
+    from . import article
+    app.register_blueprint(article.bp)
 
     return app

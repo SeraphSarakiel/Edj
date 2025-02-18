@@ -1,7 +1,7 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response
 )
 
 from EduProj.db import get_db
@@ -39,56 +39,62 @@ def parseMatrixData(data, rows, cols):
     """
     return [[float(data[i+j*3]) for i in range(rows)] for j in range(cols)]
 
-bp = Blueprint('matrix', __name__)
+bp = Blueprint('article', __name__, url_prefix="/article")
 
 @bp.route('/create', methods=('GET', 'POST'))
-def matrix():
+def article():
     if request.method == 'POST':
-        rows = request.form["rows"]
-        cols = request.form["cols"]
-        data = request.form["data"]
+        name = request.form["name"]
+        order = request.form["order"]
+        
 
         db = get_db()
         error = None
 
-        if not rows or not cols or not data:
+        if not name or not order:
             error = "All Values need to be filled"
 
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO matrices (rows, cols, data)"
-                    "VALUES (?, ?, ?)",
-                    (rows, cols, data)
+                    "INSERT INTO articles (name, stateOrder) "
+                    "VALUES (?, ?)",
+                    (name, order)
                 )
                 db.commit()
                 flash("created")
             except db.IntegrityError:
-                error = f"Matrix already exists"
+                error = f"article already exists"
         else:
-            return redirect(url_for("matrix.display"))
+            return redirect(url_for("article.display"))
         
         flash(error)
         
-    return render_template("matrix/create.html")
+    return render_template("article/create.html")
 
-@bp.route("/read")
-def index():
+@bp.route("/read/<id>")
+def article_view(id):
     db = get_db()
     matrices_processed = []
 
 
-    matrices = db.execute(
-        "SELECT * FROM matrices"
-    ).fetchall()
+    article = db.execute(
+        "SELECT * FROM articles WHERE id = ?",
+        (id,)
+    ).fetchone()
 
-    if len(matrices) >= 1:
-        returnMatrices = []
-        for matrix in matrices:
-            # no assignment to sql lite row, so new dictionary object needs to be constructed
-            matrices_processed.append({"id":matrix["id"],"data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows": matrix["rows"], "cols": matrix["cols"]})
+    if not article is None:
+        session["order"] = article["stateOrder"]
+        session["current"] = 0
+        session["name"] = article["name"]
+
+    splitOrder = session["order"].split(",")
             
-            
+    state_first = db.execute(
+        "SELECT * FROM states WHERE id = ?",
+        (splitOrder[0],)
+    ).fetchone()
+
     logger.info(matrices_processed)
-    return render_template("matrix/index.html", matrices=matrices_processed)
+    return redirect(url_for("state.read", id=state_first["id"]))
 

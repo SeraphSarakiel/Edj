@@ -1,15 +1,29 @@
 DROP TABLE IF EXISTS matrices;
+DROP TABLE IF EXISTS states;
+DROP TABLE IF EXISTS articles;
 
 CREATE TABLE matrices (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    value1 INTEGER NOT NULL,
-    value2 INTEGER NOT NULL,
-    value3 INTEGER NOT NULL,
-    value4 INTEGER NOT NULL,
-    value5 INTEGER NOT NULL,
-    value6 INTEGER NOT NULL,
-    value7 INTEGER NOT NULL,
-    value8 INTEGER NOT NULL,
-    value9 INTEGER NOT NULL
+    rows INTEGER,
+    cols INTEGER,
+    DATA VARCHAR NOT NULL
 );
+
+CREATE TABLE articles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR NOT NULL,
+    stateOrder VARCHAR NOT NULL
+);
+
+CREATE TABLE states (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR NOT NULL,
+    comment VARCHAR NOT NULL,
+    matrixId INTEGER,
+    articleId INTEGER,
+    FOREIGN KEY(matrixId) REFERENCES matrices(id), 
+    FOREIGN KEY(articleId) REFERENCES articles(id)
+);
+
+
 

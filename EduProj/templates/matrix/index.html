@@ -5,19 +5,40 @@
 {% endblock %}
 
 {% block content %}
+  {%if matrices |length == 1 %}
+  <article class="post">
+    <header>
+      <div>
+        <h1>Matrix</h1>
+      </div>
+    </header>
+    <form method="post" name="">
+    {% for i in range(matrices[0]["rows"]) %}
+    <div >
+      {% for j in range(matrices[0]["cols"]) %}
+      <input class="entry" name="value{{i*3+j}}" value={{ matrices[0]["data"][i][j] }}>
+      {% endfor %}
+    </div>
+  
+    {% endfor %}
+    <input class="invis" type="submit">
+  </form>
+  </article>
+
+  {% else %}
   {% for matrix in matrices %}
     
     <article class="post">
       <header>
         <div>
-          <h1>Matrix</h1>
+          <h1>Matrix {{matrix["id"]}}</h1>
         </div>
       </header>
       <form method="post" name="">
-      {% for i in range(3) %}
+      {% for i in range(matrix["rows"]) %}
       <div >
-        {% for j in range(3) %}
-        <input class="entry" name="value{{i*3+j}}" value={{ matrix[i][j] }}>
+        {% for j in range(matrix["cols"]) %}
+        <input class="entry" name="value{{i*3+j}}" value={{ matrix["data"][i][j] }}>
         {% endfor %}
       </div>
     
@@ -31,5 +52,6 @@
       <hr>
     {% endif %}
   {% endfor %}
+  {% endif %}
   
 {% endblock %}
