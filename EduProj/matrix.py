@@ -37,9 +37,9 @@ def parseMatrixData(data, rows, cols):
 
         exeptions: wrong data type
     """
-    return [[float(data[i+j*3]) for i in range(rows)] for j in range(cols)]
+    return [[float(data[i+j*3]) for i in range(cols)] for j in range(rows)]
 
-bp = Blueprint('matrix', __name__)
+bp = Blueprint('matrix', __name__, url_prefix = "/matrix")
 
 @bp.route('/create', methods=('GET', 'POST'))
 def matrix():
@@ -91,4 +91,29 @@ def index():
             
     logger.info(matrices_processed)
     return render_template("matrix/index.html", matrices=matrices_processed)
+
+@bp.route("/update/<id>", methods=("GET", "POST"))
+def update(id):
+    db = get_db()
+    if request.method == "POST":
+        
+        matrix = db.execute("SELECT id FROM matrices "
+                            "WHERE id = ?",
+                            (id,)).fetchone()
+        if matrix is not None:
+            rows = request.form["rows"]
+            cols = request.form["cols"]
+            data = request.form["data"]
+            db.execute("UPDATE matrices SET rows = ?, cols = ?, data = ? "
+                       "WHERE id = ?",
+                       (rows, cols, data, id))
+            db.commit()
+            flash("Update successfull")
+            return redirect(url_for("matrix.update", id=id))
+        else:
+            flash("Id doesn't exist")
+    elif request.method == "GET":
+        matrix = db.execute("SELECT * FROM matrices WHERE id = ?",
+                   (id,)).fetchone()
+        return render_template("matrix/update.html", rows=matrix["rows"], cols=matrix["cols"], data=matrix["data"], id=id)
 

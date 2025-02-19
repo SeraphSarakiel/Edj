@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Update Matrix {{id}} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div>
+        <label for="rows" name="rows" class="matrixForm">Rows</label>
+        <input name="rows" id="rows" value={{rows}} required class="matrixForm">
+        <label for="cols" name="cols" class="matrixForm">Cols</label>
+        <input name="cols" id="cols" value={{cols}} required class="matrixForm">
+        <label for="data" name="data" class="matrixForm">Data</label>
+        <input name="data" id="data" value={{data}} required class="matrixForm">
+    </div>
+    <input type="submit" value="Create" class="matrixSubmit">
+  </form>
+{% endblock %}
