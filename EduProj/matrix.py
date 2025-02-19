@@ -103,7 +103,13 @@ def update(id):
         if matrix is not None:
             rows = request.form["rows"]
             cols = request.form["cols"]
-            data = request.form["data"]
+            data = ""
+            for i in range(int(rows) * int(cols)):
+                cell = "data" + str(i)
+                data += request.form[cell] + ","
+            
+          
+
             db.execute("UPDATE matrices SET rows = ?, cols = ?, data = ? "
                        "WHERE id = ?",
                        (rows, cols, data, id))
@@ -115,5 +121,10 @@ def update(id):
     elif request.method == "GET":
         matrix = db.execute("SELECT * FROM matrices WHERE id = ?",
                    (id,)).fetchone()
-        return render_template("matrix/update.html", rows=matrix["rows"], cols=matrix["cols"], data=matrix["data"], id=id)
+        data = matrix["data"]
+        if matrix["rows"] * matrix["cols"] > len(data.split(",")):
+            for i in range(matrix["rows"] * matrix["cols"]-len(data.split(","))):
+                data += ",0"
+        data = parseMatrixData(processMatrixData(data), matrix["rows"], matrix["cols"])
+        return render_template("matrix/update.html", rows=matrix["rows"], cols=matrix["cols"], data=data, id=id)
 

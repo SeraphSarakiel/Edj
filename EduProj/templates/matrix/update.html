@@ -11,8 +11,17 @@
         <input name="rows" id="rows" value={{rows}} required class="matrixForm">
         <label for="cols" name="cols" class="matrixForm">Cols</label>
         <input name="cols" id="cols" value={{cols}} required class="matrixForm">
-        <label for="data" name="data" class="matrixForm">Data</label>
-        <input name="data" id="data" value={{data}} required class="matrixForm">
+        <label name="data" class="matrixForm">Data</label>
+        
+        {% for i in range(rows) %}
+          <div class="matrixRow">
+           {% for j in range(cols) %}
+            <input name="data{{j + i *rows}}" id="data{{j + i * rows}}" value={{data[i][j]}} required class="matrixCell">
+           {% endfor %}
+          </div>
+        {% endfor %}
+        
+        
     </div>
     <input type="submit" value="Create" class="matrixSubmit">
   </form>
