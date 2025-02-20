@@ -92,24 +92,42 @@ def index():
     logger.info(matrices_processed)
     return render_template("matrix/index.html", matrices=matrices_processed)
 
+@bp.route("/read/<id>")
+def read(id):
+    db = get_db()
+    matrix = db.execute(
+        "SELECT * FROM matrices" 
+        " WHERE id=?",
+        (id,)
+    ).fetchone()
+    matrix_processed =  [{"id":matrix["id"], "data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows":matrix["rows"], "cols":matrix["cols"]}]
+    return render_template("matrix/index.html", matrices = matrix_processed)
+
 @bp.route("/update/<id>", methods=("GET", "POST"))
 def update(id):
     db = get_db()
     if request.method == "POST":
         
-        matrix = db.execute("SELECT id FROM matrices "
+        matrix = db.execute("SELECT * FROM matrices "
                             "WHERE id = ?",
                             (id,)).fetchone()
         if matrix is not None:
+            rowsOld = matrix["rows"]
+            colsOld = matrix["cols"]
             rows = request.form["rows"]
             cols = request.form["cols"]
             data = ""
-            for i in range(int(rows) * int(cols)):
-                cell = "data" + str(i)
-                data += request.form[cell] + ","
+            for i in range(int(rows) * int(cols) - 1):
+                if i < rowsOld * colsOld - 1:
+                    cell = "data" + str(i)
+                    data += request.form[cell] + ","
+                else: 
+                    data += "0,"
+
+            data += request.form["data"+str(int(rows)*int(cols)-1)] if int(rowsOld)*int(colsOld) > int(rows)*int(cols) else "0"
             
           
-
+            logging.info(data)
             db.execute("UPDATE matrices SET rows = ?, cols = ?, data = ? "
                        "WHERE id = ?",
                        (rows, cols, data, id))
