@@ -47,13 +47,10 @@ def matrix():
         rows = request.form["rows"]
         cols = request.form["cols"]
         data = request.form["data"]
-
         db = get_db()
         error = None
-
         if not rows or not cols or not data:
             error = "All Values need to be filled"
-
         if error is None:
             try:
                 db.execute(
@@ -67,16 +64,13 @@ def matrix():
                 error = f"Matrix already exists"
         else:
             return redirect(url_for("matrix.display"))
-        
-        flash(error)
-        
+        flash(error)  
     return render_template("matrix/create.html")
 
 @bp.route("/read")
 def index():
     db = get_db()
     matrices_processed = []
-
 
     matrices = db.execute(
         "SELECT * FROM matrices"
@@ -87,8 +81,7 @@ def index():
         for matrix in matrices:
             # no assignment to sql lite row, so new dictionary object needs to be constructed
             matrices_processed.append({"id":matrix["id"],"data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows": matrix["rows"], "cols": matrix["cols"]})
-            
-            
+    
     logger.info(matrices_processed)
     return render_template("matrix/index.html", matrices=matrices_processed)
 
@@ -125,8 +118,7 @@ def update(id):
                     data += "0,"
 
             data += request.form["data"+str(int(rows)*int(cols)-1)] if int(rowsOld)*int(colsOld) > int(rows)*int(cols) else "0"
-            
-          
+                
             logging.info(data)
             db.execute("UPDATE matrices SET rows = ?, cols = ?, data = ? "
                        "WHERE id = ?",
