@@ -10,7 +10,7 @@
       
         <div class="columns-2xs bg-amber-50 p-0 m-0 border-0">
           <a class="bg-gray-300 p-0 m-0 border-0">Article {{article["id"]}}:</a> 
-          <a class="bg-gray-300 p-0 m-0 border-0" href={{url_for('article.read')+'/'}}{{(article['id'])}}>{{article["name"]}}</a>
+          <a class="bg-gray-300 p-0 m-0 border-0" href={{'/read/'}}{{(article['id'])}}>{{article["name"]}}</a>
         </div>
     <hr>
     {%endfor %}
