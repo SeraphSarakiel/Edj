@@ -6,11 +6,21 @@
 
 {% block content %}
   <form method="post">
-    <div>
-        <input name="matrix_id" id="matrix_id" required>
-        <input name="comment" id="comment" required>
-        <input name="name" id="name" required>
+    <div class="bg-gray-200">
+        <div class="flex flex-row">
+          <label for="matrix_id" class="m-1 basis-20">Id</label>
+          <input name="matrix_id" id="matrix_id" class="basis-16 m-1 border-2 border-gray-400" required>
+        </div>
+        <div class="flex flex-row">
+        <label for="comment" class="m-1 basis-20">Comment</label>
+          <input name="comment" id="comment" class="basis-16 m-1 border-2 border-gray-400" required>
+          
+      </div>
+      <div class="flex flex-row">
+        <label for="name" class="m-1 basis-20">Name</label>
+        <input name="name" id="name" class="basis-16 m-1 border-2 border-gray-400" required>
+      </div>
     </div>
-    <input type="submit" value="Create">
+    <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
   </form>
 {% endblock %}

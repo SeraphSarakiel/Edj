@@ -42,7 +42,7 @@ def parseMatrixData(data, rows, cols):
 bp = Blueprint('matrix', __name__, url_prefix = "/matrix")
 
 @bp.route('/create', methods=('GET', 'POST'))
-def matrix():
+def create():
     if request.method == 'POST':
         rows = request.form["rows"]
         cols = request.form["cols"]

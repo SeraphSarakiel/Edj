@@ -39,10 +39,10 @@ def parseMatrixData(data, rows, cols):
     """
     return [[float(data[i+j*3]) for i in range(rows)] for j in range(cols)]
 
-bp = Blueprint('article', __name__, url_prefix="/article")
+bp = Blueprint('article', __name__)
 
 @bp.route('/create', methods=('GET', 'POST'))
-def article():
+def create():
     if request.method == 'POST':
         name = request.form["name"]
         order = request.form["order"]
@@ -71,6 +71,16 @@ def article():
         flash(error)
         
     return render_template("article/create.html")
+
+@bp.route("/")
+def read():
+    db = get_db()
+    articles = db.execute(
+        "SELECT * FROM articles"
+    ).fetchall()
+
+    if articles is not None:
+        return(render_template("article/read.html", articles=articles))
 
 @bp.route("/read/<id>")
 def article_view(id):

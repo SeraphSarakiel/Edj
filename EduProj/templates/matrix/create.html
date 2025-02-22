@@ -6,11 +6,20 @@
 
 {% block content %}
   <form method="post">
-    <div>
-        <input name="rows" id="rows" required>
-        <input name="cols" id="cols" required>
-        <input name="data" id="data" required>
+    <div class="bg-gray-200">
+        <div class="flex flex-rows">
+        <label for="rows" class="m-1 basis-16">Rows</label>
+        <input name="rows" id="rows" class="m-1 border-2 border-gray-400 basis-16" required>
+      </div>
+      <div class="flex flex-rows">
+        <label for="cols" class="m-1 basis-16">Cols</label>
+        <input name="cols" id="cols" class="m-1 border-2 border-gray-400 basis-16" required>
+      </div>
+      <div class="flex flex-rows">
+        <label for="data" class="m-1 basis-16">Data</label>
+        <input name="data" id="data" class="m-1 border-2 border-gray-400 basis-16" required>
+      </div>
     </div>
-    <input type="submit" value="Create">
+    <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
   </form>
 {% endblock %}

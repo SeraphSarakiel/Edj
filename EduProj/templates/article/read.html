@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Existing Articles{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    {% for article in articles %}
+    
+      
+        <div class="columns-2xs bg-amber-50 p-0 m-0 border-0">
+          <a class="bg-gray-300 p-0 m-0 border-0">Article {{article["id"]}}:</a> 
+          <a class="bg-gray-300 p-0 m-0 border-0" href={{url_for('article.read')+'/'}}{{(article['id'])}}>{{article["name"]}}</a>
+        </div>
+    <hr>
+    {%endfor %}
+
+    <div class="flex flex-row">
+        <a class="basis-64" href={{url_for('article.create')}}>Create an article</a>
+        <a class="basis-64" href={{url_for('state.create')}}>Create a state</a>
+        <a class="basis-64" href={{url_for('matrix.create')}}>Create a matrix</a>
+    </div>
+
+{% endblock %}

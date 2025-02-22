@@ -6,10 +6,17 @@
 
 {% block content %}
   <form method="post">
-    <div>
-        <input name="name" id="name" required>
-        <input name="order" id="order" requried>
-    </div>
-    <input type="submit" value="Create">
+    <div class="bg-gray-200">
+        <div class="flex flex-row">
+        <label for="name" class="m-1 basis-16">Name</label>
+        <input name="name" id="name" required class="basis-16 m-1 border-2 border-gray-400">
+        </div>
+        <div class="flex flex-row">
+        <label for="order" class="m-1 basis-16">Order</label>
+        <input name="order" id="order" requried class="basis-16 m-1 border-2 border-gray-400">
+      </div>
+      </div>
+    <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
   </form>
+  
 {% endblock %}
