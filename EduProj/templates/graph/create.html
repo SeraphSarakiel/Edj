@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Create{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div>
+        <input name="max_x" id="max_x" required>
+        <input name="min_x" id="min_x" required>
+        <input name="max_y" id="max_y" required>
+        <input name="min_y" id="min_y" required>
+        <input name="grad" id="grad" required>
+        <input name="coeffizienten" id="coeffizienten" required>
+    </div>
+    <input type="submit" value="Create">
+  </form>
+{% endblock %}

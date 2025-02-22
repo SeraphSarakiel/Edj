@@ -35,12 +35,14 @@ def create_app(test_config=None):
     
     from . import matrix
     app.register_blueprint(matrix.bp)
-    
 
     from . import state
     app.register_blueprint(state.bp)
     
     from . import article
     app.register_blueprint(article.bp)
+
+    from . import graph
+    app.register_blueprint(graph.bp)
 
     return app

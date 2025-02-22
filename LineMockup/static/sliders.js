@@ -36,6 +36,7 @@ function setData() {
     for(i=-5;i<=5;i++){
         result.push([i, func(i)]);
     }
+    console.log(result);
     return result;
 }
 
