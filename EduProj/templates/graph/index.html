@@ -40,7 +40,6 @@
     for (let i = graph_daten[1]; i <= graph_daten[0]; i += 0.1) {
       results.push([i, func(i)]);
     }
-    console.log(results);
     return results;
   }
 
@@ -48,7 +47,7 @@
     var result = 0;
 
     for (let i = 0; i <= graph_daten[4]; i++) {
-      result += graph_daten[5][i] * x ** graph_daten[4];
+      result += graph_daten[5][i] * x ** (graph_daten[4]-i);
     }
     return result;
   }
