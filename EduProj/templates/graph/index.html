@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Posts{% endblock %}</h1>
+<script src=" https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js "></script>
+{% endblock %}
+
+{% block content %}
+<div id="main" style="width: 400px;height:400px;"></div>
+
+{% block javascript %}
+<script>
+  var chart = echarts.init(document.getElementById("main"));
+  var graph_daten = JSON.parse({{ graph_daten | tojson}});
+  console.log(graph_daten);
+
+  option = {
+    xAxis: {
+      name: 'x',
+      max: graph_daten[0],
+      min: graph_daten[1]
+    },
+    yAxis: {
+      name: 'y',
+      max: graph_daten[2],
+      min: graph_daten[3]
+    },
+    series: [
+      {
+        data: setData(),
+        showSymbol: false,
+        type: 'line'
+      }
+    ]
+  };
+  chart.setOption(option);
+
+  function setData() {
+    var results = [];
+    for (let i = graph_daten[1]; i <= graph_daten[0]; i += 0.1) {
+      results.push([i, func(i)]);
+    }
+    return results;
+  }
+
+  function func(x) {
+    var result = 0;
+
+    for (let i = 0; i <= graph_daten[4]; i++) {
+      result += graph_daten[5][i] * x ** (graph_daten[4]-i);
+    }
+    return result;
+  }
+</script>
+{% endblock %}
+{% endblock %}
