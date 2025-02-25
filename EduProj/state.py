@@ -94,8 +94,8 @@ def read(id):
     returnMatrix = ""
     name = ""
     comment = ""
-    data = ""
-    rows = 0
+    data = ""    
+    rows = 0    
     cols = 0    
     logging.info("ID")
     logging.info(id)
@@ -105,7 +105,7 @@ def read(id):
         (id)
     ).fetchone()
     
-    if len(state) >= 1:
+    if not state is None:
         returnMatrix = state["id"]
         name = state["name"]
         comment = state["comment"]
@@ -134,6 +134,8 @@ def next():
         session["current"] += 1
     else:
         session["current"] = len(session_order_split) - 1 
+
+    
     return redirect(url_for("state.read", id=session_order_split[session["current"]]))
     
 

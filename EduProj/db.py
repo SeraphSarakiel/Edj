@@ -36,7 +36,16 @@ sqlite3.register_converter(
     "timestamp", lambda v:datetime.fromisoformat(v.decode())
 )
 
+@click.command('populate-testdata')
+def populate_testdata():
+    """Create test data in predefined Tables"""
+    db = get_db()
+    with current_app.open_resource("Schemas/testData.sql") as f:
+        db.executescript(f.read().decode("utf8"))
+    click.echo("Database is now populated with test data")
+
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(populate_testdata)
 

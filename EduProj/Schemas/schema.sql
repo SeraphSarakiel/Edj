@@ -37,3 +37,8 @@ CREATE TABLE graphs (
     grad INTEGER,
     coeffizienten VARCHAR
 );
+
+
+
+
+

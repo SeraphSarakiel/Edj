@@ -78,6 +78,7 @@ def read():
     articles = db.execute(
         "SELECT * FROM articles"
     ).fetchall()
+    logging.info(articles)
 
     if articles is not None:
         return(render_template("article/read.html", articles=articles))
