@@ -7,18 +7,19 @@
 {% block content %}
     {% for article in articles %}
     
-      
-        <div class="columns-2xs bg-amber-50 p-0 m-0 border-0">
-          <a class="bg-gray-300 p-0 m-0 border-0">Article {{article["id"]}}:</a> 
-          <a class="bg-gray-300 p-0 m-0 border-0" href={{'/read/'}}{{(article['id'])}}>{{article["name"]}}</a>
+    <a class="m-0 border-0" href={{'/read/'}}{{(article['id'])}}>
+        <div class="columns-2xs bg-blue-200 p-2 m-0 border-1 border-white">
+          
+          Article {{article["id"]}} : {{article["name"]}}
         </div>
+      </a>
     <hr>
     {%endfor %}
 
     <div class="flex flex-row">
-        <a class="basis-64" href={{url_for('article.create')}}>Create an article</a>
-        <a class="basis-64" href={{url_for('state.create')}}>Create a state</a>
-        <a class="basis-64" href={{url_for('matrix.create')}}>Create a matrix</a>
+        <a class="flex-1/3 p-2 bg-gray-200 border-2 border-gray-500 flex items-center justify-center" href={{url_for('article.create')}}>Create an article</a>
+        <a class="flex-1/3 p-2 bg-gray-200 border-2 border-gray-500 flex items-center justify-center" href={{url_for('state.create')}}>Create a state</a>
+        <a class="flex-1/3 p-2 bg-gray-200 border-2 border-gray-500 flex items-center justify-center" href={{url_for('matrix.create')}}>Create a matrix</a>
     </div>
 
 {% endblock %}
