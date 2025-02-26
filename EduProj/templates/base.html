@@ -11,9 +11,9 @@
   <a class="flex-1/6"></a>
 </nav>
 <section class="content mt-10" >
-  <header>
+  <div class="text-4xl font-sans border-b-2 border-red-600 flex w-65 mb-4 pb-2 justify-center">
     {% block header %}{% endblock %}
-  </header>
+  </div>
   {% for message in get_flashed_messages() %}
     {% if message is not none %}
     <div class="flash">{{ message }}</div>

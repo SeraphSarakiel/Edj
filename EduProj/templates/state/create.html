@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Create{% endblock %}</h1>
+  {% block title %}Create a state{% endblock %}
 {% endblock %}
 
 {% block content %}
   <form method="post">
-    <div class="bg-gray-200">
-        <div class="flex flex-row">
-          <label for="matrix_id" class="m-1 basis-20">Id</label>
-          <input name="matrix_id" id="matrix_id" class="basis-16 m-1 border-2 border-gray-400" required>
+    <div class="bg-white">
+        <div class="flex flex-row mt-5 mb-5">
+          <label for="matrix_id" class="m-1 basis-40">Id</label>
+          <input name="matrix_id" id="matrix_id" class="basis-40 m-1 border-2 border-red-600" required>
         </div>
-        <div class="flex flex-row">
-        <label for="comment" class="m-1 basis-20">Comment</label>
-          <input name="comment" id="comment" class="basis-16 m-1 border-2 border-gray-400" required>
+        <div class="flex flex-row mt-5 mb-5">
+        <label for="comment" class="m-1 basis-40">Comment</label>
+          <input name="comment" id="comment" class="basis-40 m-1 border-2 border-red-600" required>
           
       </div>
-      <div class="flex flex-row">
-        <label for="name" class="m-1 basis-20">Name</label>
-        <input name="name" id="name" class="basis-16 m-1 border-2 border-gray-400" required>
+      <div class="flex flex-row mt-5 mb-5">
+        <label for="name" class="m-1 basis-40">Name</label>
+        <input name="name" id="name" class="basis-16 m-1 border-2 border-red-600" required>
       </div>
     </div>
     <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">

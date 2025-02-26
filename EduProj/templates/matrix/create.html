@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Create{% endblock %}</h1>
+  {% block title %}Create a matrix{% endblock %}
 {% endblock %}
 
 {% block content %}
   <form method="post">
-    <div class="bg-gray-200">
-        <div class="flex flex-rows">
-        <label for="rows" class="m-1 basis-16">Rows</label>
-        <input name="rows" id="rows" class="m-1 border-2 border-gray-400 basis-16" required>
+    <div class="bg-white">
+        <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Rows</label>
+        <input name="rows" id="rows" class="m-1 border-2 border-red-600 basis-40" required>
       </div>
-      <div class="flex flex-rows">
-        <label for="cols" class="m-1 basis-16">Cols</label>
-        <input name="cols" id="cols" class="m-1 border-2 border-gray-400 basis-16" required>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="cols" class="m-1 basis-40">Cols</label>
+        <input name="cols" id="cols" class="m-1 border-2 border-red-600 basis-40" required>
       </div>
-      <div class="flex flex-rows">
-        <label for="data" class="m-1 basis-16">Data</label>
-        <input name="data" id="data" class="m-1 border-2 border-gray-400 basis-16" required>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="data" class="m-1 basis-40">Data</label>
+        <input name="data" id="data" class="m-1 border-2 border-red-600 basis-40" required>
       </div>
     </div>
     <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">

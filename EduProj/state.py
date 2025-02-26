@@ -115,14 +115,20 @@ def read(id):
             (returnMatrix,)
         ).fetchone()
 
-        rows = matrix["rows"]
-        cols = matrix["cols"]
-        data = matrix["data"]
+        if matrix is not None:
+
+            rows = matrix["rows"]
+            cols = matrix["cols"]
+            data = matrix["data"]
         
-        returnData = parseMatrixData(processMatrixData(data), rows, cols)
+            returnData = parseMatrixData(processMatrixData(data), rows, cols)
 
        
-        return render_template("state/display.html", matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name)
+            return render_template("state/display.html", matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name)
+        else:
+            flash("No matrix with id" + str(returnMatrix))
+            return redirect(url_for("matrix.create"))
+
     else: 
         flash("No State with this ID")
         return redirect(url_for("state.create"))
