@@ -1,10 +1,16 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
-<nav>
-  <h1>Edu Proj</h1>
+<nav class="flex bg-white">
+
+  <a href="/" class="flex-1/6"><img src="{{url_for('static', filename='icon_try.png')}}" class="w-20 h-20 z-1"/></a>
+  <a class="flex-1/6 p-2 hover:bg-red-300 bg-white border-2 border-red-600 flex items-center justify-center"href="/">Home</a>
+  <a class="flex-1/6 p-2 hover:bg-red-300  bg-white border-t-2 border-b-2 border-r-2 border-red-600 flex items-center justify-center" href={{url_for('article.create')}}>Create an article</a>
+  <a class="flex-1/6 p-2 hover:bg-red-300  bg-white border-t-2 border-b-2 border-red-600 flex items-center justify-center" href={{url_for('state.create')}}>Create a state</a>
+  <a class="flex-1/6 p-2 hover:bg-red-300 bg-white border-2 border-red-600 flex items-center justify-center" href={{url_for('matrix.create')}}>Create a matrix</a>
+  <a class="flex-1/6"></a>
 </nav>
-<section class="content">
+<section class="content mt-10" >
   <header>
     {% block header %}{% endblock %}
   </header>
@@ -13,7 +19,9 @@
     <div class="flash">{{ message }}</div>
     {% endif %}
   {% endfor %}
+  <div class="mb-10">
   {% block content %}{% endblock %}
+  </div>
   <hr>
-  <a class="flex-1/3 p-2 bg-gray-200 border-2 border-gray-500 flex items-center justify-center"href="/">Home</a>
+  
 </section>

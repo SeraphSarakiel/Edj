@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Existing Articles{% endblock %}</h1>
+  <div class="text-4xl font-sans border-b-2 border-red-600 flex w-65 mb-2 justify-center">{% block title %}Existing Articles{% endblock %}</div>
 {% endblock %}
 
 {% block content %}
     {% for article in articles %}
     
     <a class="m-0 border-0" href={{'/read/'}}{{(article['id'])}}>
-        <div class="columns-2xs bg-blue-200 p-2 m-0 border-1 border-white">
+       {% if loop.last %}
+       <div class="hover:bg-red-300 bg-white columns-2xs bg-blue-200 p-2 m-0 border-l-1 border-r-1 border-t-1 border-b-1 border-red-600">
+          
+        Article {{article["id"]}} : {{article["name"]}}
+      </div>
+    </a>
+       {% else %}
+       <div class="hover:bg-red-300 bg-white columns-2xs bg-blue-200 p-2 m-0 border-l-1 border-r-1 border-t-1 border-red-600">
           
           Article {{article["id"]}} : {{article["name"]}}
         </div>
       </a>
-    <hr>
+    {% endif %}
     {%endfor %}
 
     <div class="flex flex-row">
-        <a class="flex-1/3 p-2 bg-gray-200 border-2 border-gray-500 flex items-center justify-center" href={{url_for('article.create')}}>Create an article</a>
-        <a class="flex-1/3 p-2 bg-gray-200 border-2 border-gray-500 flex items-center justify-center" href={{url_for('state.create')}}>Create a state</a>
-        <a class="flex-1/3 p-2 bg-gray-200 border-2 border-gray-500 flex items-center justify-center" href={{url_for('matrix.create')}}>Create a matrix</a>
+
     </div>
 
 {% endblock %}
