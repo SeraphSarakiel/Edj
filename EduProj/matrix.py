@@ -41,12 +41,22 @@ def parseMatrixData(data, rows, cols):
 
 bp = Blueprint('matrix', __name__, url_prefix = "/matrix")
 
+
+
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':
-        rows = request.form["rows"]
-        cols = request.form["cols"]
-        data = request.form["data"]
+        args = request.args.to_dict()
+        rows = int(request.form["rows"])
+        cols = int(request.form["cols"])
+        data = ""
+        #rows = request.form["rows"]
+        #cols = request.form["cols"]
+        for i in range(int(rows)):
+            for j in range(int(cols)):
+                data += request.form["data"+str(i*cols+j)] + ","
+        data = data[:-1]
+        logging.info(data)
         db = get_db()
         error = None
         if not rows or not cols or not data:
@@ -66,6 +76,9 @@ def create():
             return redirect(url_for("matrix.display"))
         flash(error)  
     return render_template("matrix/create.html")
+
+
+
 
 @bp.route("/read")
 def index():

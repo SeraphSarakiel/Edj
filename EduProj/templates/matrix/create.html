@@ -1,3 +1,52 @@
+<script>
+  function handleMatrix() {
+
+    console.log("called");
+    let inputForm = document.getElementById("dataContainerNode");
+    let inputData = document.getElementById("dataContainer");
+    if(inputData !== null) {
+      inputData.remove();
+    }
+    
+
+    let rows = document.getElementById("rows").value;
+    let cols = document.getElementById("cols").value;
+    let dataContainer = document.createElement('div');
+    dataContainer.id = "dataContainer";
+    inputForm.appendChild(dataContainer);
+
+    if(rows===""||cols==="") {
+      return
+    }
+
+    let currentRow = null;
+    let currentCell = null;
+    console.log(rows);
+
+    for(var i = 0; i < rows; i++) {
+      currentRow = document.createElement('div');
+      currentRow.classList.add("flex");
+      currentRow.classList.add("flex-rows");
+      currentRow.classList.add("mb-5");
+      currentRow.classList.add("mt-5");
+      dataContainer.appendChild(currentRow);
+      for(var j = 0; j < cols; j++) {
+        currentCell = document.createElement('input');
+        currentCell.classList.add("row-span1")
+        currentCell.classList.add("border-amber-100")
+        currentCell.classList.add("border-solid")
+        currentCell.classList.add("border-2")
+        currentCell.id = "data"+(j+i*cols)
+        currentCell.name = "data"+(j+i*cols)
+        currentRow.appendChild(currentCell);
+        
+      }
+    }
+
+  }
+</script>
+
+
 {% extends 'base.html' %}
 
 {% block header %}
@@ -5,21 +54,21 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
+  <form method="post" id="inputForm">
+    <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
     <div class="bg-white">
         <div class="flex flex-rows mb-5 mt-5">
         <label for="rows" class="m-1 basis-40">Rows</label>
-        <input name="rows" id="rows" class="m-1 border-2 border-red-600 basis-40" required>
+        <input name="rows" id="rows" class="m-1 border-2 border-red-600 basis-40" oninput="handleMatrix()" required>
       </div>
       <div class="flex flex-rows mb-5 mt-5">
         <label for="cols" class="m-1 basis-40">Cols</label>
-        <input name="cols" id="cols" class="m-1 border-2 border-red-600 basis-40" required>
+        <input name="cols" id="cols" class="m-1 border-2 border-red-600 basis-40" oninput="handleMatrix()" required>
       </div>
-      <div class="flex flex-rows mb-5 mt-5">
-        <label for="data" class="m-1 basis-40">Data</label>
-        <input name="data" id="data" class="m-1 border-2 border-red-600 basis-40" required>
+      <div id="dataContainerNode">
+
       </div>
     </div>
-    <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
+    
   </form>
 {% endblock %}
