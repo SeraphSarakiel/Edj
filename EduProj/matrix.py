@@ -37,7 +37,7 @@ def parseMatrixData(data, rows, cols):
 
         exeptions: wrong data type
     """
-    return [[float(data[i+j*3]) for i in range(cols)] for j in range(rows)]
+    return [[float(data[i+j*rows]) for i in range(cols)] for j in range(rows)]
 
 bp = Blueprint('matrix', __name__, url_prefix = "/matrix")
 
@@ -81,7 +81,7 @@ def create():
 
 
 @bp.route("/read")
-def index():
+def read():
     db = get_db()
     matrices_processed = []
 
@@ -96,10 +96,10 @@ def index():
             matrices_processed.append({"id":matrix["id"],"data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows": matrix["rows"], "cols": matrix["cols"]})
     
     logger.info(matrices_processed)
-    return render_template("matrix/index.html", matrices=matrices_processed)
+    return render_template("matrix/read.html", matrices=matrices_processed)
 
 @bp.route("/read/<id>")
-def read(id):
+def read_single(id):
     db = get_db()
     matrix = db.execute(
         "SELECT * FROM matrices" 
@@ -107,7 +107,7 @@ def read(id):
         (id,)
     ).fetchone()
     matrix_processed =  [{"id":matrix["id"], "data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows":matrix["rows"], "cols":matrix["cols"]}]
-    return render_template("matrix/index.html", matrices = matrix_processed)
+    return render_template("matrix/read.html", matrices = matrix_processed)
 
 @bp.route("/update/<id>", methods=("GET", "POST"))
 def update(id):

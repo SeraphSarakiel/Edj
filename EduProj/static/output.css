@@ -13,19 +13,13 @@
     --color-blue-200: oklch(0.882 0.059 254.128);
     --color-blue-500: oklch(0.623 0.214 259.815);
     --color-gray-100: oklch(0.967 0.003 264.542);
-    --color-gray-200: oklch(0.928 0.006 264.531);
     --color-gray-300: oklch(0.872 0.01 258.338);
-    --color-gray-400: oklch(0.707 0.022 261.325);
     --color-white: #fff;
     --spacing: 0.25rem;
     --container-2xs: 18rem;
     --container-xs: 20rem;
-    --text-xs: 0.75rem;
-    --text-xs--line-height: calc(1 / 0.75);
     --text-xl: 1.25rem;
     --text-xl--line-height: calc(1.75 / 1.25);
-    --text-2xl: 1.5rem;
-    --text-2xl--line-height: calc(2 / 1.5);
     --text-4xl: 2.25rem;
     --text-4xl--line-height: calc(2.5 / 2.25);
     --default-font-family: var(--font-sans);
@@ -181,14 +175,17 @@
   .collapse {
     visibility: collapse;
   }
+  .invisible {
+    visibility: hidden;
+  }
+  .visible {
+    visibility: visible;
+  }
   .relative {
     position: relative;
   }
   .static {
     position: static;
-  }
-  .left-2 {
-    left: calc(var(--spacing) * 2);
   }
   .z-1 {
     z-index: 1;
@@ -199,17 +196,11 @@
   .m-1 {
     margin: calc(var(--spacing) * 1);
   }
-  .m-5 {
-    margin: calc(var(--spacing) * 5);
-  }
   .mt-5 {
     margin-top: calc(var(--spacing) * 5);
   }
   .mt-10 {
     margin-top: calc(var(--spacing) * 10);
-  }
-  .mb-2 {
-    margin-bottom: calc(var(--spacing) * 2);
   }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
@@ -228,6 +219,9 @@
   }
   .grid {
     display: grid;
+  }
+  .hidden {
+    display: none;
   }
   .inline {
     display: inline;
@@ -265,9 +259,6 @@
   .basis-16 {
     flex-basis: calc(var(--spacing) * 16);
   }
-  .basis-20 {
-    flex-basis: calc(var(--spacing) * 20);
-  }
   .basis-40 {
     flex-basis: calc(var(--spacing) * 40);
   }
@@ -285,6 +276,9 @@
   }
   .grid-flow-col {
     grid-auto-flow: column;
+  }
+  .flex-col {
+    flex-direction: column;
   }
   .flex-row {
     flex-direction: row;
@@ -345,9 +339,6 @@
   .border-gray-300 {
     border-color: var(--color-gray-300);
   }
-  .border-gray-400 {
-    border-color: var(--color-gray-400);
-  }
   .border-red-600 {
     border-color: var(--color-red-600);
   }
@@ -357,11 +348,11 @@
   .bg-blue-500 {
     background-color: var(--color-blue-500);
   }
-  .bg-gray-200 {
-    background-color: var(--color-gray-200);
-  }
   .bg-white {
     background-color: var(--color-white);
+  }
+  .p-0 {
+    padding: calc(var(--spacing) * 0);
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
@@ -372,10 +363,6 @@
   .font-sans {
     font-family: var(--font-sans);
   }
-  .text-2xl {
-    font-size: var(--text-2xl);
-    line-height: var(--tw-leading, var(--text-2xl--line-height));
-  }
   .text-4xl {
     font-size: var(--text-4xl);
     line-height: var(--tw-leading, var(--text-4xl--line-height));
@@ -383,10 +370,6 @@
   .text-xl {
     font-size: var(--text-xl);
     line-height: var(--tw-leading, var(--text-xl--line-height));
-  }
-  .text-xs {
-    font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
   }
   .text-white {
     color: var(--color-white);
@@ -400,6 +383,27 @@
   .outline {
     outline-style: var(--tw-outline-style);
     outline-width: 1px;
+  }
+  .group-hover\:visible {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        visibility: visible;
+      }
+    }
+  }
+  .group-hover\:flex {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        display: flex;
+      }
+    }
+  }
+  .group-hover\:flex-col {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        flex-direction: column;
+      }
+    }
   }
   .hover\:bg-gray-100 {
     &:hover {
@@ -419,6 +423,25 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-gray-300);
+      }
+    }
+  }
+  .hover\:after\:visible {
+    &:hover {
+      @media (hover: hover) {
+        &::after {
+          content: var(--tw-content);
+          visibility: visible;
+        }
+      }
+    }
+  }
+  .hover\:last\:visible {
+    &:hover {
+      @media (hover: hover) {
+        &:last-child {
+          visibility: visible;
+        }
       }
     }
   }
@@ -723,4 +746,9 @@ input {
   syntax: "*";
   inherits: false;
   initial-value: solid;
+}
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
 }
