@@ -5,10 +5,10 @@ INSERT INTO matrices (rows, cols, data)
 VALUES (4,4,"1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1");
 
 INSERT INTO graphs (max_x, min_x, max_y, min_y, grad, coeffizienten)
-VALUES (7,0,7,0,1,"0,1");
+VALUES (5,-5,5,-5,1,"1,0");
 
 INSERT INTO graphs (max_x, min_x, max_y, min_y, grad, coeffizienten)
-VALUES (7,3,7,2,2,"1,0,0");
+VALUES (10,0,10,0,2,"1,0,0");
 
 INSERT INTO articles (name, stateOrder) 
 VALUES ("Test1", "1,3,2");

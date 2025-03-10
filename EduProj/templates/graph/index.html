@@ -11,33 +11,17 @@
 {% block javascript %}
 <script>
   var chart = echarts.init(document.getElementById("main"));
-  var graph_daten = JSON.parse({{ graph_daten | tojson}});
-  console.log(graph_daten);
+  var graphData = JSON.parse(JSON.parse({{ graphData | tojson}}));
 
-  option = {
-    xAxis: {
-      name: 'x',
-      max: graph_daten[0],
-      min: graph_daten[1]
-    },
-    yAxis: {
-      name: 'y',
-      max: graph_daten[2],
-      min: graph_daten[3]
-    },
-    series: [
-      {
-        data: setData(),
-        showSymbol: false,
-        type: 'line'
-      }
-    ]
-  };
+  var option = graphData.option;
+
+  option.series[0].data = setData();
+
   chart.setOption(option);
 
   function setData() {
     var results = [];
-    for (let i = graph_daten[1]; i <= graph_daten[0]; i += 0.1) {
+    for (let i = option.xAxis.min; i <= option.xAxis.max; i += 0.1) {
       results.push([i, func(i)]);
     }
     return results;
@@ -46,9 +30,10 @@
   function func(x) {
     var result = 0;
 
-    for (let i = 0; i <= graph_daten[4]; i++) {
-      result += graph_daten[5][i] * x ** (graph_daten[4]-i);
+    for (let i = 0; i <= Number(graphData.data.grad); i++) {
+      result += Number(graphData.data.coeffizienten[i]) * x ** (Number(graphData.data.grad)-i);
     }
+
     return result;
   }
 </script>
