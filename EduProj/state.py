@@ -123,7 +123,7 @@ def read(id):
         
             returnData = parseMatrixData(processMatrixData(data), rows, cols)
 
-       
+        
             return render_template("state/read.html", matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name)
         else:
             flash("No matrix with id" + str(returnMatrix))

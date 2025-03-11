@@ -100,7 +100,7 @@ def article_view(id):
         session["name"] = article["name"]
 
     splitOrder = session["order"].split(",")
-            
+    logging.info(splitOrder)
     state_first = db.execute(
         "SELECT * FROM states WHERE id = ?",
         (splitOrder[0],)
