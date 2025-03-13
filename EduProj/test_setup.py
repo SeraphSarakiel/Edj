@@ -1,7 +1,7 @@
 import importlib.util
 
-initspec = importlib.util.spec_from_file_location("__init__","../__init__.py")
-dbspec = importlib.util.spec_from_file_location("db","../db.py")
+initspec = importlib.util.spec_from_file_location("__init__","./EduProj/__init__.py")
+dbspec = importlib.util.spec_from_file_location("db","./EduProj/db.py")
 
 init = importlib.util.module_from_spec(initspec)
 db = importlib.util.module_from_spec(dbspec)
@@ -40,12 +40,26 @@ def runner(app):
     return app.test_cli_runner()
 
 @pytest.fixture
-def init_db(app):
-    db.init_db()
+def app_context(app):
+    with app.app_context():
+        yield
 
 @pytest.fixture
-def init_testdata(init_db):
-    db.populate_testdata()     
+def runner(app):
+    return app.test_cli_runner()
 
-def test_setup(app,init_db,init_testdata):
-    assert True==False;
+@pytest.fixture
+def init_db(app, app_context, runner):
+    result = runner.invoke(args="init-db")
+
+@pytest.fixture
+def init_testdata(init_db, runner):
+    result = runner.invoke(args="populate-testdata")     
+
+@pytest.fixture
+def client(app):
+    return app.test_client()
+
+def test_setup(app,client,init_db,init_testdata):
+    assert True == True
+

@@ -4,7 +4,7 @@ from flask import Flask
 
 def create_app(test_config=None):
     # create and cofigure the app
-    app = Flask(__name__, instance_relative_config=True) #config fiels relative to instance folder
+    app = Flask(__name__, instance_relative_config=True, template_folder="templates") #config fiels relative to instance folder
     app.config.from_mapping( 
         SECRET_KEY='dev', 
         DATABASE=os.path.join(app.instance_path, 'EduProj.sqlite'),
@@ -30,19 +30,19 @@ def create_app(test_config=None):
 
     
 
-    from . import db
+    import EduProj.db as db
     db.init_app(app)
     
-    from . import matrix
+    import EduProj.matrix as matrix 
     app.register_blueprint(matrix.bp)
 
-    from . import state
+    import EduProj.state as state
     app.register_blueprint(state.bp)
     
-    from . import article
+    import EduProj.article as article
     app.register_blueprint(article.bp)
 
-    from . import graph
+    import EduProj.graph as graph
     app.register_blueprint(graph.bp)
 
     return app
