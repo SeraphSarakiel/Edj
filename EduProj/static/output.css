@@ -175,11 +175,8 @@
   .collapse {
     visibility: collapse;
   }
-  .invisible {
-    visibility: hidden;
-  }
-  .visible {
-    visibility: visible;
+  .absolute {
+    position: absolute;
   }
   .relative {
     position: relative;
@@ -187,14 +184,65 @@
   .static {
     position: static;
   }
+  .top-full {
+    top: 100%;
+  }
+  .left-0 {
+    left: calc(var(--spacing) * 0);
+  }
   .z-1 {
     z-index: 1;
+  }
+  .col-start-1 {
+    grid-column-start: 1;
+  }
+  .col-start-2 {
+    grid-column-start: 2;
+  }
+  .col-start-3 {
+    grid-column-start: 3;
+  }
+  .col-start-4 {
+    grid-column-start: 4;
+  }
+  .col-start-5 {
+    grid-column-start: 5;
+  }
+  .col-start-6 {
+    grid-column-start: 6;
+  }
+  .col-end-1 {
+    grid-column-end: 1;
+  }
+  .col-end-2 {
+    grid-column-end: 2;
+  }
+  .col-end-3 {
+    grid-column-end: 3;
+  }
+  .col-end-4 {
+    grid-column-end: 4;
+  }
+  .col-end-5 {
+    grid-column-end: 5;
+  }
+  .col-end-6 {
+    grid-column-end: 6;
+  }
+  .row-start-1 {
+    grid-row-start: 1;
+  }
+  .row-end-1 {
+    grid-row-end: 1;
   }
   .m-0 {
     margin: calc(var(--spacing) * 0);
   }
   .m-1 {
     margin: calc(var(--spacing) * 1);
+  }
+  .m-2 {
+    margin: calc(var(--spacing) * 2);
   }
   .mt-5 {
     margin-top: calc(var(--spacing) * 5);
@@ -241,11 +289,26 @@
   .h-20 {
     height: calc(var(--spacing) * 20);
   }
+  .w-1 {
+    width: calc(var(--spacing) * 1);
+  }
+  .w-1\/6 {
+    width: calc(1/6 * 100%);
+  }
+  .w-15 {
+    width: calc(var(--spacing) * 15);
+  }
   .w-20 {
     width: calc(var(--spacing) * 20);
   }
+  .w-40 {
+    width: calc(var(--spacing) * 40);
+  }
   .w-65 {
     width: calc(var(--spacing) * 65);
+  }
+  .w-full {
+    width: 100%;
   }
   .w-xs {
     width: var(--container-xs);
@@ -277,6 +340,15 @@
   .grid-flow-col {
     grid-auto-flow: column;
   }
+  .grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .grid-rows-3 {
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
   .flex-col {
     flex-direction: column;
   }
@@ -288,6 +360,9 @@
   }
   .justify-center {
     justify-content: center;
+  }
+  .justify-self-auto {
+    justify-self: auto;
   }
   .border {
     border-style: var(--tw-border-style);
@@ -313,10 +388,6 @@
     border-right-style: var(--tw-border-style);
     border-right-width: 1px;
   }
-  .border-r-2 {
-    border-right-style: var(--tw-border-style);
-    border-right-width: 2px;
-  }
   .border-b-1 {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
@@ -328,6 +399,10 @@
   .border-l-1 {
     border-left-style: var(--tw-border-style);
     border-left-width: 1px;
+  }
+  .border-l-2 {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 2px;
   }
   .border-solid {
     --tw-border-style: solid;
@@ -351,11 +426,17 @@
   .bg-white {
     background-color: var(--color-white);
   }
-  .p-0 {
-    padding: calc(var(--spacing) * 0);
+  .p-1 {
+    padding: calc(var(--spacing) * 1);
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
+  }
+  .p-3 {
+    padding: calc(var(--spacing) * 3);
+  }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
   }
   .pb-2 {
     padding-bottom: calc(var(--spacing) * 2);
@@ -384,10 +465,10 @@
     outline-style: var(--tw-outline-style);
     outline-width: 1px;
   }
-  .group-hover\:visible {
+  .group-hover\:absolute {
     &:is(:where(.group):hover *) {
       @media (hover: hover) {
-        visibility: visible;
+        position: absolute;
       }
     }
   }
@@ -423,25 +504,6 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-gray-300);
-      }
-    }
-  }
-  .hover\:after\:visible {
-    &:hover {
-      @media (hover: hover) {
-        &::after {
-          content: var(--tw-content);
-          visibility: visible;
-        }
-      }
-    }
-  }
-  .hover\:last\:visible {
-    &:hover {
-      @media (hover: hover) {
-        &:last-child {
-          visibility: visible;
-        }
       }
     }
   }
@@ -620,24 +682,6 @@ nav {
   align-items: center;
   padding: 0 0.5rem;
 }
-nav h1 {
-  flex: auto;
-  margin: 0;
-}
-nav h1 a {
-  text-decoration: none;
-  padding: 0.25rem 0.5rem;
-}
-nav ul {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-nav ul li a, nav ul li span, header .action {
-  display: block;
-  padding: 0.5rem;
-}
 .content {
   padding: 0 1rem 1rem;
 }
@@ -746,9 +790,4 @@ input {
   syntax: "*";
   inherits: false;
   initial-value: solid;
-}
-@property --tw-content {
-  syntax: "*";
-  initial-value: "";
-  inherits: false;
 }
