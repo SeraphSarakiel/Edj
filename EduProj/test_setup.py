@@ -63,3 +63,23 @@ def client(app):
 def test_setup(app,client,init_db,init_testdata):
     assert True == True
 
+def test_db_make_dicts(app, app_context, init_db, init_testdata):
+    test_db = db.get_db()
+    cursor = test_db.cursor()
+    test_db.execute(
+                    "INSERT INTO articles (name, stateOrder) "
+                    "VALUES ('test', '1,2,3')"
+                )
+    test_db.commit()
+    row = cursor.execute("SELECT * FROM articles").fetchmany()
+    
+    result_func = db.make_dicts(cursor, row)
+    result_exp = {"id" : 1, "name":"test", "stateOrder":"1,2,3"}
+    
+
+
+    print("descr")
+    print(result_func)
+    
+    assert result_func == result_exp
+
