@@ -85,7 +85,7 @@ def create():
             flash(error)
 
         
-    return render_template("state/create.html")
+    return render_template("state/create.html", cols_page=2)
 
 @bp.route("/read/<id>")
 def read(id):
@@ -124,7 +124,7 @@ def read(id):
             returnData = parseMatrixData(processMatrixData(data), rows, cols)
 
         
-            return render_template("state/read.html", matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name)
+            return render_template("state/read.html", matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name, cols_page=1)
         else:
             flash("No matrix with id" + str(returnMatrix))
             return redirect(url_for("matrix.create"))

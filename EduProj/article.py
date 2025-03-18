@@ -70,7 +70,7 @@ def create():
         
         flash(error)
         
-    return render_template("article/create.html")
+    return render_template("article/create.html", cols_page=1)
 
 @bp.route("/")
 def read():
@@ -81,7 +81,7 @@ def read():
     logging.info(articles)
 
     if articles is not None:
-        return(render_template("article/read.html", articles=articles))
+        return(render_template("article/read.html", articles=articles, cols_page=1))
 
 @bp.route("/read/<id>")
 def article_view(id):
@@ -107,5 +107,5 @@ def article_view(id):
     ).fetchone()
 
     logger.info(matrices_processed)
-    return redirect(url_for("state.read", id=state_first["id"]))
+    return redirect(url_for("state.read", id=state_first["id"], cols_page=1))
 

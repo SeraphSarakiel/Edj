@@ -75,7 +75,7 @@ def create():
         else:
             return redirect(url_for("matrix.display"))
         flash(error)  
-    return render_template("matrix/create.html")
+    return render_template("matrix/create.html", cols_page=1)
 
 
 
@@ -96,7 +96,7 @@ def read():
             matrices_processed.append({"id":matrix["id"],"data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows": matrix["rows"], "cols": matrix["cols"]})
     
     logger.info(matrices_processed)
-    return render_template("matrix/read.html", matrices=matrices_processed)
+    return render_template("matrix/read.html", matrices=matrices_processed, cols_page=1)
 
 @bp.route("/read/<id>")
 def read_single(id):
@@ -107,7 +107,7 @@ def read_single(id):
         (id,)
     ).fetchone()
     matrix_processed =  [{"id":matrix["id"], "data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows":matrix["rows"], "cols":matrix["cols"]}]
-    return render_template("matrix/read.html", matrices = matrix_processed)
+    return render_template("matrix/read.html", matrices = matrix_processed, cols_page=1)
 
 @bp.route("/update/<id>", methods=("GET", "POST"))
 def update(id):
@@ -149,5 +149,5 @@ def update(id):
             for i in range(matrix["rows"] * matrix["cols"]-len(data.split(","))):
                 data += ",0"
         data = parseMatrixData(processMatrixData(data), matrix["rows"], matrix["cols"])
-        return render_template("matrix/update.html", rows=matrix["rows"], cols=matrix["cols"], data=data, id=id)
+        return render_template("matrix/update.html", rows=matrix["rows"], cols=matrix["cols"], data=data, id=id, cols_page=1)
 
