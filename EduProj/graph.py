@@ -45,7 +45,7 @@ def postGraph():
     db = get_db()
     error = None
     
-    if  id or  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
+    if  id or  max_x is None or  min_x is None or  max_y is None or  min_y is None or  grad is None or  coef is None:
         error = "All Values need to be filled"
     
     if error is None:
@@ -78,7 +78,7 @@ def updateGraph():
     db = get_db()
     error = None
     
-    if  id or  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
+    if  id or  max_x is None or  min_x is None or  max_y is None or  min_y is None or  grad is None or  coef is None:
         error = "All Values need to be filled"
     
     if error is None:
@@ -107,7 +107,7 @@ def updateGraphbyId(id):
     db = get_db()
     error = None
     
-    if  id or  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
+    if  id or  max_x is None or  min_x is None or  max_y is None or  min_y is None or  grad is None or  coef is None:
         error = "All Values need to be filled"
     
     if error is None:
@@ -162,13 +162,13 @@ def createGraph():
         min_y = int(request.form["min_y"])
         grad = int(request.form["grad"])
         coef = request.form["coeffizienten"]
-        print(max_x,min_x,max_y,min_y,grad,coef)
         
         db = get_db()
         error = None
 
-        if  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
-            error = "All Values need to be filled"
+        if  max_x is None or  min_x is None or  max_y is None or  min_y is None or  grad is None or  coef is None:
+            print(max_x,min_x,max_y,min_y,grad,coef)
+            error = "All Values need to be filled!"
             
         if error is None:
             try:
