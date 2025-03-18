@@ -151,7 +151,7 @@ def showGraph(id):
     graphProcessed = graphGenerator.generate()
     print(graphProcessed)
     
-    return render_template("graph/index.html", graphData = graphProcessed)
+    return render_template("graph/index.html", graphData = graphProcessed, cols_page = 1)
 
 @bp.route("/create", methods=["GET","POST"])
 def createGraph():
@@ -184,4 +184,4 @@ def createGraph():
         else:
             abort(400,error)
         flash(error)
-    return render_template("graph/create.html")
+    return render_template("graph/create.html", cols_page = 1)
