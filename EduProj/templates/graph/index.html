@@ -11,7 +11,8 @@
 {% block javascript %}
 <script>
   var chart = echarts.init(document.getElementById("main"));
-  var graphData = JSON.parse(JSON.parse({{ graphData | tojson}}));
+  var graphData = JSON.parse({{ graphData | tojson}});
+  console.log(graphData.data.coeffizienten[0])
 
   var option = graphData.option;
 
@@ -24,6 +25,7 @@
     for (let i = option.xAxis.min; i <= option.xAxis.max; i += 0.1) {
       results.push([i, func(i)]);
     }
+    console.log(results)
     return results;
   }
 

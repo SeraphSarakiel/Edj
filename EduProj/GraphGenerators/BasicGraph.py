@@ -6,18 +6,18 @@ class BasicGraph:
     
     def generate(self):
         graph_processed = {
-            "data" : {"grad": self.graph.get("grad"),
-                      "coeffizienten" : process_coef(self.graph.get("coeffizienten"))},
+            "data" : {"grad": self.graph["grad"],
+                      "coeffizienten" : process_coef(self.graph["coeffizienten"])},
             "option" : {
                 "xAxis": {
                 "name": "x",
-                "max": self.graph.get("max_x"),
-                "min": self.graph.get("min_x")
+                "max": self.graph["max_x"],
+                "min": self.graph["min_x"]
                 },
                 "yAxis": {
                 "name": "y",
-                "max": self.graph.get("max_y"),
-                "min": self.graph.get("min_y")
+                "max": self.graph["max_y"],
+                "min": self.graph["min_y"]
                 },
                 "series": [
                 {
@@ -26,12 +26,12 @@ class BasicGraph:
                 }
                 ]
             }
-        }        
+        }
         return json.dumps(graph_processed)
     
 def process_coef(raw_coef):
-    
+    result_coef = []
     split_coef = raw_coef.split(",")
     for coef in split_coef:
-        coef = float(coef)
-    return split_coef
+        result_coef.append(int(coef))        
+    return result_coef

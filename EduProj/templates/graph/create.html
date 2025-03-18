@@ -7,12 +7,30 @@
 {% block content %}
   <form method="post">
     <div>
-        <input name="max_x" id="max_x" required>
-        <input name="min_x" id="min_x" required>
-        <input name="max_y" id="max_y" required>
-        <input name="min_y" id="min_y" required>
-        <input name="grad" id="grad" required>
-        <input name="coeffizienten" id="coeffizienten" required>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Max x</label>
+        <input name="max_x" id="max_x" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Min x</label>
+        <input name="min_x" id="min_x" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Max y</label>
+        <input name="max_y" id="max_y" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Min y</label>
+        <input name="min_y" id="min_y" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Grad</label>
+        <input name="grad" id="grad" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Coeffizienten</label>
+        <input name="coeffizienten" id="coeffizienten" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
     </div>
     <input type="submit" value="Create">
   </form>

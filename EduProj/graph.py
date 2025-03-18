@@ -44,10 +44,10 @@ def postGraph():
     
     db = get_db()
     error = None
-
-    if not max_x or not min_x or not max_y or not min_y or not grad or not coef:
+    
+    if  id or  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
         error = "All Values need to be filled"
-        
+    
     if error is None:
         try:
             db.execute(
@@ -78,7 +78,7 @@ def updateGraph():
     db = get_db()
     error = None
     
-    if not id or not max_x or not min_x or not max_y or not min_y or not grad or not coef:
+    if  id or  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
         error = "All Values need to be filled"
     
     if error is None:
@@ -107,7 +107,7 @@ def updateGraphbyId(id):
     db = get_db()
     error = None
     
-    if not id or not max_x or not min_x or not max_y or not min_y or not grad or not coef:
+    if  id or  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
         error = "All Values need to be filled"
     
     if error is None:
@@ -149,5 +149,39 @@ def showGraph(id):
     
     graphGenerator = BasicGraph.BasicGraph(rawgraph)
     graphProcessed = graphGenerator.generate()
+    print(graphProcessed)
     
-    return render_template("graph/index.html", graphData = json.dumps(graphProcessed))
+    return render_template("graph/index.html", graphData = graphProcessed)
+
+@bp.route("/create", methods=["GET","POST"])
+def createGraph():
+    if request.method == "POST":
+        max_x = int(request.form["max_x"])
+        min_x = int(request.form["min_x"])
+        max_y = int(request.form["max_y"])
+        min_y = int(request.form["min_y"])
+        grad = int(request.form["grad"])
+        coef = request.form["coeffizienten"]
+        print(max_x,min_x,max_y,min_y,grad,coef)
+        
+        db = get_db()
+        error = None
+
+        if  max_x != None or  min_x != None or  max_y != None or  min_y != None or  grad != None or  coef != None:
+            error = "All Values need to be filled"
+            
+        if error is None:
+            try:
+                db.execute(
+                    "INSERT INTO graphs (max_x, min_x, max_y, min_y, grad, coeffizienten)"
+                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    (max_x, min_x, max_y, min_y, grad, coef)
+                )
+                db.commit()
+                flash("created")
+            except db.IntegrityError:
+                error = f"Matrix already exists"
+        else:
+            abort(400,error)
+        flash(error)
+    return render_template("graph/create.html")
