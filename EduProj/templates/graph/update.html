@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Update{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Max x</label>
+        <input name="max_x" id="max_x" value={{graphData["max_x"]}} class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Min x</label>
+        <input name="min_x" id="min_x" value={{graphData["min_x"]}} class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Max y</label>
+        <input name="max_y" id="max_y" value={{graphData["max_y"]}} class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Min y</label>
+        <input name="min_y" id="min_y" value={{graphData["min_y"]}} class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Grad</label>
+        <input name="grad" id="grad" value={{graphData["grad"]}} class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Coeffizienten</label>
+        <input name="coeffizienten" id="coeffizienten" value={{graphData["coeffizienten"]}} class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+    </div>
+    <input type="submit" value="Update">
+  </form>
+{% endblock %}
