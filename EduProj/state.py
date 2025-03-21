@@ -15,6 +15,12 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+class Matrix:
+    def __init__(self, rows, cols, data):
+        self._rows = rows
+        self._cols = cols
+        self._data = data
+
 def processMatrixData(dataString):
     """
         Processes the matrix data
@@ -50,7 +56,8 @@ def create():
     if request.method == 'POST':
         name = request.form["name"]
         comment = request.form["comment"]
-        matrix_id = int(request.form["matrix_id"])
+        matrix_id = request.form["matrix_id"]
+        col_state = request.form["col_state"]
 
         logger.info(name)
         logger.info(comment)
@@ -71,9 +78,9 @@ def create():
                 ).fetchone()
 
                 db.execute(
-                    "INSERT INTO states (name, comment, matrixId) " 
-                    "VALUES (?, ?, ?)",
-                    (name,comment,matrix_id)
+                    "INSERT INTO states (name, comment, matrixId, col_state) " 
+                    "VALUES (?, ?, ?, ?)",
+                    (name,comment,matrix_id, col_state)
                 );
                 db.commit()
                 flash("created")
@@ -97,6 +104,7 @@ def read(id):
     data = ""    
     rows = 0    
     cols = 0    
+    cols_page = 0
     logging.info("ID")
     logging.info(id)
     
@@ -106,25 +114,33 @@ def read(id):
     ).fetchone()
     
     if not state is None:
-        returnMatrix = state["id"]
+        returnMatrix = state["matrixId"]
         name = state["name"]
         comment = state["comment"]
+        cols_page = state["col_state"]
 
-        matrix = db.execute(
-            "SELECT * FROM matrices WHERE id = ?",
-            (returnMatrix,)
-        ).fetchone()
+        matrices = []
 
-        if matrix is not None:
+        for matrixId in returnMatrix.split(","):
+            matrix = db.execute(
+                "SELECT * FROM matrices WHERE id = ?",
+                (matrixId,)
+            ).fetchone()
+            matrices.append(matrix)
 
-            rows = matrix["rows"]
-            cols = matrix["cols"]
-            data = matrix["data"]
+        returnMatrices = []
+        if matrices is not None:
+            for matrix in matrices: 
+                
+                rows = matrix["rows"]
+                cols = matrix["cols"]
+                data = matrix["data"]
         
-            returnData = parseMatrixData(processMatrixData(data), rows, cols)
-
+                returnData = parseMatrixData(processMatrixData(data), rows, cols)
+                currentMatrix = Matrix(rows, cols, returnData)
+                returnMatrices.append(currentMatrix)
         
-            return render_template("state/read.html", matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name, cols_page=1)
+            return render_template("state/read.html", returnMatrices = returnMatrices ,matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name, cols_page=cols_page)
         else:
             flash("No matrix with id" + str(returnMatrix))
             return redirect(url_for("matrix.create"))

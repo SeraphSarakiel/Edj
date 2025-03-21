@@ -21,10 +21,10 @@ CREATE TABLE states (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR NOT NULL,
     comment VARCHAR NOT NULL,
-    matrixId INTEGER,
+    matrixId VARCHAR,
     graphId INTEGER,
     articleId INTEGER,
-    FOREIGN KEY(matrixId) REFERENCES matrices(id), 
+    col_state INTEGER,
     FOREIGN KEY(articleId) REFERENCES articles(id),
     FOREIGN KEY(graphId) REFERENCES graphs(id)
 );

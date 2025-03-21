@@ -6,29 +6,38 @@
 
 {% block content %}
     
-    <article class="post">
+    <article class="post w-full">
       <header>
         <div>
           <h1>Step {{session["current"] + 1}} </h1>
         </div>
       </header>
-      <form method="post" name="">
-      {% for i in range(cols) %}
-      <div >
-        {% for j in range(rows) %}
-        <input class="entry" name="value{{i*3+j}}" value={{ matrix[i][j] }}>
-        {% endfor %}
+      <div class="grid grid-cols-3 grid-rows-2 w-full">
+        {% for matrix in returnMatrices %}
+        <div class="col-start-{{loop.index}} row-start-1 grid grid-cols-{{matrix._cols}} grid-rows-{{matrix._rows}} grid">
+        <form method="post" name="" class="inline-block">
+          {% for i in range(matrix._cols) %}
+          <div class="col-start-{{i}} col-span-1 inline-block">
+            {% for j in range(matrix._rows) %}
+            <input class="w-{{(returnMatrices | length / matrix._cols * 10) | round | int}} min-w-8 row-start-{{j}} row-span-1" name="value{{i*3+j}} inline" value={{ matrix._data[i][j] }}>
+            {% endfor %}
+          </div>
+    
+          {% endfor %}
+          <input class="invis" type="submit">
+        </form>
+        
       </div>
-    
-      {% endfor %}
-      <input class="invis" type="submit">
-    </form>
-    <div> {{ comment }} </div>
-    </article>
+      <div class="col-start-{{loop.index}} row-start-2 row-span-1 inline"> {{ comment }} </div>
     
     
     
-      <hr>
+      
+  
+  {% endfor %}
+  </div>
+</article>
+</div>
   {%if session["order"] %}
   <div style="padding: 20px 0 20px 0">
     <a href={{url_for("state.previous")}} style="height: 50px; float: left; margin: 0 0 20px 0;">Previous</a>

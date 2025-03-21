@@ -44,16 +44,10 @@
     <div class="flash">{{ message }}</div>
     {% endif %}
   {% endfor %}
-  <div class="mb-10">
+  <div class="w-full mb-10 col-start-1 col-span-3">
   {% block content %}{% endblock %}
   </div>
-  {% if cols_page > 1 %}
-    {% for i in range(cols_page) %}
-      <div class="cols-start-{{i}} cols-span-1">
-        <div>Test</div>
-      </div>
-    {% endfor %}
-  {% endif %}
+
   <hr>
   
 </section>

@@ -16,11 +16,11 @@ VALUES ("Test1", "1,3,2");
 INSERT INTO articles (name, stateOrder)
 VALUES ("Test2", "1,2,3");
 
-INSERT INTO states (name,comment,matrixId,articleId)
-VALUES ("Test1", "This is test1", 1,1);
+INSERT INTO states (name,comment,matrixId,articleId, col_state)
+VALUES ("Test1", "This is test1", "1",1, 1);
 
-INSERT INTO states (name,comment,graphId, articleId)
-VALUES ("Test2", "This is test2", 1,2);
+INSERT INTO states (name,comment, articleId,col_state)
+VALUES ("Test2", "This is test2", "1,2",2, 2);
 
-INSERT INTO states (name,comment,graphId,matrixId, articleId)
-VALUES ("Test3", "This is test3", 2,2,3);
+INSERT INTO states (name,comment,graphId,matrixId, articleId, col_state)
+VALUES ("Test3", "This is test3", 2,"2,2,1",3,3);
