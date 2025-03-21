@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify, abort
+    Blueprint, flash, render_template, request, jsonify, abort
 )
 from EduProj.db import get_db
 
@@ -180,8 +180,53 @@ def createGraph():
                 db.commit()
                 flash("created")
             except db.IntegrityError:
-                error = f"Matrix already exists"
+                error = f"Graph already exists"
         else:
             abort(400,error)
         flash(error)
     return render_template("graph/create.html", cols_page = 1)
+
+@bp.route("/update/<id>", methods=["GET","POST"])
+def updateGraphHTML(id):
+    if request.method == "POST":
+        max_x = int(request.form["max_x"])
+        min_x = int(request.form["min_x"])
+        max_y = int(request.form["max_y"])
+        min_y = int(request.form["min_y"])
+        grad = int(request.form["grad"])
+        coef = request.form["coeffizienten"]
+        
+        db = get_db()
+        error = None
+
+        if  max_x is None or  min_x is None or  max_y is None or  min_y is None or  grad is None or  coef is None:
+            print(max_x,min_x,max_y,min_y,grad,coef)
+            error = "All Values need to be filled!"
+            
+        if error is None:
+            try:
+                db.execute(
+                    "UPDATE graphs SET max_x = ?, min_x = ?, max_y = ?, min_y = ?, grad = ?, coeffizienten = ?"
+                    "WHERE id = ?",
+                    (max_x, min_x, max_y, min_y, grad, coef, id)
+                )
+                db.commit()
+                flash("Update successfull")
+            except db.IntegrityError:
+                error = f"Id doesn't exist"
+        else:
+            abort(400,error)
+        flash(error)
+
+    db = get_db()
+    rawGraph = db.execute("SELECT * FROM graphs WHERE id = ?",
+               (id,)).fetchone()
+        
+    graphProcessed = {  "max_x" : rawGraph["max_x"],
+                        "min_x" : rawGraph["min_x"],
+                        "max_y" : rawGraph["max_y"],
+                        "min_y" : rawGraph["min_y"],
+                        "grad" : rawGraph["grad"],
+                        "coeffizienten" : rawGraph["coeffizienten"]
+                }
+    return render_template("graph/update.html", graphData = graphProcessed, cols_page = 1)
