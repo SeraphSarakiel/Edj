@@ -40,6 +40,13 @@ sqlite3.register_converter(
     "timestamp", lambda v:datetime.fromisoformat(v.decode())
 )
 
+@click.command('LR')
+def init_lr():
+    db = get_db()
+    with current_app.open_resource("Schemas/LR.sql") as f:
+        db.executescript(f.read().decode("utf8"))
+    click.echo("LR Article has been added to database")
+
 @click.command('populate-testdata')
 def populate_testdata():
     """Create test data in predefined Tables"""
@@ -52,4 +59,5 @@ def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(populate_testdata)
+    app.cli.add_command(init_lr)
 

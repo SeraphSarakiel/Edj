@@ -12,14 +12,14 @@
           <h1>Step {{session["current"] + 1}} </h1>
         </div>
       </header>
-      <div class="grid grid-cols-3 grid-rows-2 w-full">
+      <div class="grid grid-cols-{{returnMatrices | length}} grid-rows-2 w-full">
         {% for matrix in returnMatrices %}
-        <div class="col-start-{{loop.index}} row-start-1 grid grid-cols-{{matrix._cols}} grid-rows-{{matrix._rows}} grid">
+        <div class="col-start-{{loop.index}} row-start-1 grid grid-cols-{{matrix._cols}} grid-rows-{{matrix._rows}} grid mr-10">
         <form method="post" name="" class="inline-block">
-          {% for i in range(matrix._cols) %}
-          <div class="col-start-{{i}} col-span-1 inline-block">
-            {% for j in range(matrix._rows) %}
-            <input class="w-{{(returnMatrices | length / matrix._cols * 10) | round | int}} min-w-8 row-start-{{j}} row-span-1" name="value{{i*3+j}} inline" value={{ matrix._data[i][j] }}>
+          {% for i in range(matrix._rows) %}
+          <div class="row-start-{{i}} row-span-1 inline-block">
+            {% for j in range(matrix._cols) %}
+            <input class="min-w-8 w-8 col-start-{{j}} col-span-1" name="value{{i*3+j}} inline" value={{ matrix._data[i][j] }}>
             {% endfor %}
           </div>
     

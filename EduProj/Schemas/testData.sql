@@ -19,7 +19,7 @@ VALUES ("Test2", "1,2,3");
 INSERT INTO states (name,comment,matrixId,articleId, col_state)
 VALUES ("Test1", "This is test1", "1",1, 1);
 
-INSERT INTO states (name,comment, articleId,col_state)
+INSERT INTO states (name,comment, matrixId,articleId,col_state)
 VALUES ("Test2", "This is test2", "1,2",2, 2);
 
 INSERT INTO states (name,comment,graphId,matrixId, articleId, col_state)

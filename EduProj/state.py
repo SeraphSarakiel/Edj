@@ -21,6 +21,10 @@ class Matrix:
         self._cols = cols
         self._data = data
 
+    def __str__(self):
+        return "rows: " + str(self._rows) +"\n" + "cols: " + str(self._cols) +"\n" + str(self._data)
+        
+
 def processMatrixData(dataString):
     """
         Processes the matrix data
@@ -139,6 +143,8 @@ def read(id):
                 returnData = parseMatrixData(processMatrixData(data), rows, cols)
                 currentMatrix = Matrix(rows, cols, returnData)
                 returnMatrices.append(currentMatrix)
+        
+                print(currentMatrix)
         
             return render_template("state/read.html", returnMatrices = returnMatrices ,matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name, cols_page=cols_page)
         else:
