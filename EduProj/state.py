@@ -59,12 +59,25 @@ def create():
     error = None
     if request.method == 'POST':
         name = request.form["name"]
-        comment = request.form["comment"]
+
+        i = 0
+        comments = []
+
+        try:
+            while request.form["comment"+str(i)] != None:
+                comments.append(request.form["comment"+str(i)])
+                i += 1
+        except:
+            print("end reached")
+
+        
+
+       
         matrix_id = request.form["matrix_id"]
         col_state = request.form["col_state"]
 
         logger.info(name)
-        logger.info(comment)
+       
         logger.info(matrix_id)
 
         if not name: 
@@ -81,14 +94,26 @@ def create():
                     (matrix_id,)
                 ).fetchone()
 
-                db.execute(
-                    "INSERT INTO states (name, comment, matrixId, col_state) " 
-                    "VALUES (?, ?, ?, ?)",
-                    (name,comment,matrix_id, col_state)
+                cursor = db.execute(
+                    "INSERT INTO states (name, matrixId, col_state) " 
+                    "VALUES (?, ?, ?)",
+                    (name,matrix_id, col_state)
                 );
                 db.commit()
-                flash("created")
+                
+                
 
+                for comment in comments:
+                    cursor = db.execute(
+                        "INSERT INTO comments (comment, stateId) "
+                        "VALUES (?,?)",
+                        (comment, cursor.lastrowid)
+                    )
+                    db.commit()
+                print(comments)
+
+                flash("created")
+                
 
             except Exception as e:
                 flash(e)

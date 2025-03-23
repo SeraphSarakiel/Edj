@@ -1,8 +1,30 @@
+<script>
+  var i = 0;
+  function addComment() {
+    i += 1;
+    let newCommentLabel = document.createElement("label");
+    newCommentLabel.innerHTML = "Comment "+i;
+    let newComment = document.createElement("input");
+    
+    
+    let commentContainer = document.getElementById("commentContainer");
+    newCommentLabel.classList = ["basis-10 m-1 flex-row-span-1"+ " flex-row-start-"+i]
+    newComment.classList = ["basis-10 m-1 border-2 border-red-600 flex-row-span-1 flex-row-start-"+i]
+    newComment.name = "comment"+i;
+    newComment.id = "comment"+i;
+    commentContainer.appendChild(newCommentLabel);
+    commentContainer.appendChild(newComment);
+    
+  }
+</script>
+
 {% extends 'base.html' %}
 
 {% block header %}
   {% block title %}Create a state{% endblock %}
 {% endblock %}
+
+
 
 {% block content %}
   <form method="post">
@@ -11,11 +33,13 @@
           <label for="matrix_id" class="m-1 basis-40">Id</label>
           <input name="matrix_id" id="matrix_id" class="basis-40 m-1 border-2 border-red-600" required>
         </div>
-        <div class="flex flex-row mt-5 mb-5">
-        <label for="comment" class="m-1 basis-40">Comments</label>
-          <input name="comment" id="comment" class="basis-40 m-1 border-2 border-red-600" required>
+        <div id="commentContainer" class="flex flex-col mt-5 mb-5">
+          <label for="comment" class="m-1 basis-10">Comments</label>
+          <input name="comment0" id="comment0" class="basis-10 m-1 border-2 border-red-600" required>
+        
           
       </div>
+      <button class="flex-row min-w-10 min-h-2 h-2 border-red-600 border-2 bg-gray-100" onclick="addComment()">Add</button>
       <div class="flex flex-row mt-5 mb-5">
         <label for="name" class="m-1 basis-40">Name</label>
         <input name="name" id="name" class="basis-16 m-1 border-2 border-red-600" required>
