@@ -16,10 +16,10 @@
         {% for matrix in returnMatrices %}
         <div class="col-start-{{loop.index}} row-start-1 grid grid-cols-{{matrix._cols}} grid-rows-{{matrix._rows}} grid mr-10">
         <form method="post" name="" class="inline-block">
-          {% for i in range(matrix._rows) %}
-          <div class="row-start-{{i}} row-span-1 inline-block">
-            {% for j in range(matrix._cols) %}
-            <input class="min-w-8 w-8 col-start-{{j}} col-span-1" name="value{{i*3+j}} inline" value={{ matrix._data[i][j] }}>
+          {% for i in range(matrix._cols) %}
+          <div class="inline-block">
+            {% for j in range(matrix._rows) %}
+              <input class="min-w-8 w-8" name="value{{i*3+j}} inline" value={{ matrix._data[i][j] }}>
             {% endfor %}
           </div>
     

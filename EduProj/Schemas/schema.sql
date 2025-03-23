@@ -39,6 +39,14 @@ CREATE TABLE graphs (
     coeffizienten VARCHAR
 );
 
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    comment VARCHAR,
+    stateId INTEGER, 
+    col_state INTEGER,
+    FOREIGN KEY(stateId) REFERENCES state(id)
+)
+
 
 
 

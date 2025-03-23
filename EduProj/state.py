@@ -48,7 +48,7 @@ def parseMatrixData(data, rows, cols):
 
         exeptions: wrong data type
     """
-    return [[float(data[i*3+j]) for i in range(rows)] for j in range(cols)]
+    return [[float(data[i+j*rows]) for i in range(cols)] for j in range(rows)]
     
 
 
@@ -139,8 +139,10 @@ def read(id):
                 rows = matrix["rows"]
                 cols = matrix["cols"]
                 data = matrix["data"]
+                print(data)
         
                 returnData = parseMatrixData(processMatrixData(data), rows, cols)
+                print(returnData)
                 currentMatrix = Matrix(rows, cols, returnData)
                 returnMatrices.append(currentMatrix)
         
