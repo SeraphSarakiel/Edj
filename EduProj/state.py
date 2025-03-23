@@ -120,7 +120,18 @@ def read(id):
     if not state is None:
         returnMatrix = state["matrixId"]
         name = state["name"]
-        comment = state["comment"]
+
+        comments = db.execute(
+            "SELECT * FROM comments WHERE stateId = ?",
+            (id,)
+        ).fetchall()
+
+        returnComments = []
+        for comment in comments:
+            commentlines = comment["comment"].split(";")
+            returnComments.append(commentlines)
+        
+        
         cols_page = state["col_state"]
 
         matrices = []
@@ -148,7 +159,7 @@ def read(id):
         
                 print(currentMatrix)
         
-            return render_template("state/read.html", returnMatrices = returnMatrices ,matrix = returnData, cols = int(cols), rows = int(rows), comment=comment, name=name, cols_page=cols_page)
+            return render_template("state/read.html", returnMatrices = returnMatrices ,matrix = returnData, cols = int(cols), rows = int(rows), comments=returnComments, name=name, cols_page=cols_page)
         else:
             flash("No matrix with id" + str(returnMatrix))
             return redirect(url_for("matrix.create"))

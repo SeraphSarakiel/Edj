@@ -28,7 +28,11 @@
         </form>
         
       </div>
-      <div class="col-start-{{loop.index}} row-start-2 row-span-1 inline"> {{ comment }} </div>
+      <div class="col-start-{{loop.index}} row-start-2 row-span-1 inline">
+        {% for commentline in comments[loop.index-1]%}
+        <p>{{ commentline }}</p>
+        {% endfor %} 
+      </div>
     
     
     

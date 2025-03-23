@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS matrices;
 DROP TABLE IF EXISTS states;
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS graphs;
+DROP TABLE IF EXISTS comments;
 
 CREATE TABLE matrices (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,7 +21,6 @@ CREATE TABLE articles (
 CREATE TABLE states (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR NOT NULL,
-    comment VARCHAR NOT NULL,
     matrixId VARCHAR,
     graphId INTEGER,
     articleId INTEGER,
@@ -43,7 +43,6 @@ CREATE TABLE comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     comment VARCHAR,
     stateId INTEGER, 
-    col_state INTEGER,
     FOREIGN KEY(stateId) REFERENCES state(id)
 )
 
