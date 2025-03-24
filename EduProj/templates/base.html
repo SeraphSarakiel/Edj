@@ -32,6 +32,15 @@
         <li class="p-4 hover:bg-red-300"><a href={{url_for('matrix.update', id=1)}}>Update</a></li>
       </ul>
   </div>
+
+  <div class="col-start-3 col-end-3 w-1/6 row-start-1 row-end-1 p-2 h-20 grid hover:bg-red-300 bg-white border-2 border-red-600 items-center justify-center group relative">
+    <a class="">Graph</a>
+      <ul class="left-0 top-full hidden absolute  group-hover:flex flex-col bg-white border-2 border-red-600 w-full"> 
+        <li class="p-4 hover:bg-red-300"><a href={{url_for('graph.showGraph', id=1)}}>Display</a></li>
+        <li class="p-4 hover:bg-red-300"><a href={{url_for('graph.createGraph')}}>Create</a></li>
+        <li class="p-4 hover:bg-red-300"><a href={{url_for('graph.updateGraphHTML', id=1)}}>Update</a></li>
+      </ul>
+  </div>
   
   <a class="flex-1/6 h-20 col-start-6 w-1/6 col-end-6"></a>
 </nav>
