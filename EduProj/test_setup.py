@@ -63,23 +63,24 @@ def client(app):
 def test_setup(app,client,init_db,init_testdata):
     assert True == True
 
-def test_db_make_dicts(app, app_context, init_db, init_testdata):
+
+def test_state_creation(app,client, app_context, init_db): 
     test_db = db.get_db()
-    cursor = test_db.cursor()
-    test_db.execute(
-                    "INSERT INTO articles (name, stateOrder) "
-                    "VALUES ('test', '1,2,3')"
-                )
-    test_db.commit()
-    row = cursor.execute("SELECT * FROM articles").fetchmany()
-    
-    result_func = db.make_dicts(cursor, row)
-    result_exp = {"id" : 1, "name":"test", "stateOrder":"1,2,3"}
+    client.post("/state/create", data={"name":"testState",
+                                                 "comment1":"testComment",
+                                                 "comment2":"testComment2",
+                                                 "matrix_id": "1,2",
+                                                 "col_state": "2"})
+    actual_row = test_db.execute("SELECT * FROM states "
+                                 "WHERE name = 'testState'").fetchone()
+    actual_comments = test_db.execute("SELECT * FROM comments "
+    "WHERE stateId = ?", (actual_row.data["id"],)).fetchall()
+
+    assert actual_row.data["name"] == "testState"
+    assert actual_row.data["matrix_id"] == "1,2"
+    assert actual_row.data["col_state"] == 2
+    assert actual_comments[0] == "testComment"
+    assert actual_comments[1] == "testComment2"
     
 
-
-    print("descr")
-    print(result_func)
-    
-    assert result_func == result_exp
 

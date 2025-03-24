@@ -59,7 +59,8 @@ def create():
     error = None
     if request.method == 'POST':
         name = request.form["name"]
-
+        print("called")
+        print(name)
         i = 0
         comments = []
 
@@ -101,15 +102,17 @@ def create():
                 );
                 db.commit()
                 
-                
+                stateId = cursor.lastrowid
 
                 for comment in comments:
+                    if comment == '':
+                        continue;
                     cursor = db.execute(
                         "INSERT INTO comments (comment, stateId) "
                         "VALUES (?,?)",
-                        (comment, cursor.lastrowid)
+                        (comment, stateId)
                     )
-                    db.commit()
+                db.commit()
                 print(comments)
 
                 flash("created")
@@ -134,8 +137,7 @@ def read(id):
     rows = 0    
     cols = 0    
     cols_page = 0
-    logging.info("ID")
-    logging.info(id)
+    
     
     state = db.execute(
         "SELECT * FROM states WHERE id = ?",
@@ -151,11 +153,12 @@ def read(id):
             (id,)
         ).fetchall()
 
+       
+
         returnComments = []
         for comment in comments:
             commentlines = comment["comment"].split(";")
             returnComments.append(commentlines)
-        
         
         cols_page = state["col_state"]
 
@@ -175,14 +178,14 @@ def read(id):
                 rows = matrix["rows"]
                 cols = matrix["cols"]
                 data = matrix["data"]
-                print(data)
+              
         
                 returnData = parseMatrixData(processMatrixData(data), rows, cols)
-                print(returnData)
+              
                 currentMatrix = Matrix(rows, cols, returnData)
                 returnMatrices.append(currentMatrix)
         
-                print(currentMatrix)
+               
         
             return render_template("state/read.html", returnMatrices = returnMatrices ,matrix = returnData, cols = int(cols), rows = int(rows), comments=returnComments, name=name, cols_page=cols_page)
         else:

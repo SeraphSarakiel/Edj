@@ -95,7 +95,7 @@ def read():
             # no assignment to sql lite row, so new dictionary object needs to be constructed
             matrices_processed.append({"id":matrix["id"],"data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows": matrix["rows"], "cols": matrix["cols"]})
     
-    logger.info(matrices_processed)
+    
     return render_template("matrix/read.html", matrices=matrices_processed, cols_page=1)
 
 @bp.route("/read/<id>")
