@@ -12,6 +12,7 @@ dbspec.loader.exec_module(db)
 import pytest
 import os
 
+from EduProj.GraphGenerators import BasicGraph
 
 
 @pytest.fixture
@@ -66,7 +67,7 @@ def test_setup(app,client,init_db,init_testdata):
 
 def test_state_creation(app,client, app_context, init_db): 
     test_db = db.get_db()
-    client.post("/state/create", data={"name":"testState",
+    client.post("templates/state/create", data={"name":"testState",
                                                  "comment1":"testComment",
                                                  "comment2":"testComment2",
                                                  "matrix_id": "1,2",
@@ -81,6 +82,56 @@ def test_state_creation(app,client, app_context, init_db):
     assert actual_row.data["col_state"] == 2
     assert actual_comments[0] == "testComment"
     assert actual_comments[1] == "testComment2"
+
+
+def test_create_graph(app,client, app_context, init_db):
+    test_db = db.get_db()
+    client.post("templates/graph/create", data={"max_x" : "10",
+                                       "min_x" : "-10",
+                                       "max_y" : "10",
+                                       "min_y" : "-10",
+                                       "grad" : "1",
+                                       "coeffizienten" : "2,0"})
+    actual_graph = test_db.execute("SELECT * FROM graphs "
+                                   "WHERE id = 2").fetchone()
+    assert actual_graph["max_x"] == 10
+    assert actual_graph["min_x"] == -10
+    assert actual_graph["max_y"] == 10
+    assert actual_graph["min_y"] == -10
+    assert actual_graph["grad"] == 1
+    assert actual_graph["coeffizienten"] == "2,0"
+
+#can't find read
+def test_read_graph(app,client, app_context, init_db):   
+    response = client.get("templates/graph/read/3")
+    test_db = db.get_db()
+    actual_graph = test_db.execute("SELECT * FROM graphs "
+                                   "WHERE id = 2").fetchone()
+    graphGenerator = BasicGraph.BasicGraph(actual_graph)
+    graphProcessed = graphGenerator.generate()
     
-
-
+    assert str.encode(graphProcessed) in response.data
+    
+#also doesn't do the update
+def test_update_graph(app,client, app_context, init_db):
+    test_db = db.get_db()
+    client.post("templates/graph/update/2", data = {"max_x" : "20",
+                                        "min_x" : "-20",
+                                        "max_y" : "20",
+                                        "min_y" : "-20",
+                                        "grad" : "2",
+                                        "coeffizienten" : "1,0,0"})
+    
+    actual_graph = test_db.execute("SELECT * FROM graphs "
+                                   "WHERE id = 2").fetchone()
+    
+    assert actual_graph["max_x"] == 20
+    assert actual_graph["min_x"] == -20
+    assert actual_graph["max_y"] == 20
+    assert actual_graph["min_y"] == -20
+    assert actual_graph["grad"] == 2
+    assert actual_graph["coeffizienten"] == "1,0,0"
+    
+#not implemented yet
+def test_delete_graph(app,client, app_context, init_db):
+    assert True

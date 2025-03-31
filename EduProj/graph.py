@@ -137,8 +137,9 @@ def deleteGraphbyId(id):
     except db.IntegrityError:
             abort(500)
 
-@bp.route("/display/<id>", methods = ["GET"])
-def showGraph(id):
+@bp.route("/read/<id>", methods = ["GET"])
+def showGraph(id):    
+    
     db = get_db()
 
     rawgraph = db.execute(
@@ -151,7 +152,7 @@ def showGraph(id):
     graphProcessed = graphGenerator.generate()
     print(graphProcessed)
     
-    return render_template("graph/index.html", graphData = graphProcessed, cols_page = 1)
+    return render_template("graph/read.html", graphData = graphProcessed, cols_page = 1)
 
 @bp.route("/create", methods=["GET","POST"])
 def createGraph():
