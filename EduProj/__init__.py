@@ -48,6 +48,9 @@ def create_app(test_config=None):
     
     with app.app_context():
         db.create_all()
+        
+    import EduProj.auth as auth
+    app.register_blueprint(auth.bp)
     
     import EduProj.matrix as matrix 
     app.register_blueprint(matrix.bp)

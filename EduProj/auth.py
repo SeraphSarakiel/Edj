@@ -27,7 +27,9 @@ def login():
         if not user or not check_password_hash(user.password, password):
             flash('Please check your login details and try again.')
             return redirect(url_for('auth.login'))
-        
+        flash("logged in")
+    
+       
     return render_template('auth/login.html')
  
 @bp.route('/signup', methods=["GET","POST"])
@@ -42,7 +44,7 @@ def signup():
             flash("Username already in use")
             return redirect(url_for("auth.signup"))
         
-        new_user = User(username = username, password = generate_password_hash(password, method="sha256"))
+        new_user = User(username = username, password = generate_password_hash(password))
         db.session.add(new_user)
         db.session.commit()
     

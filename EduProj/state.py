@@ -115,6 +115,9 @@ def create():
         
     return render_template("state/create.html", cols_page=2)
 
+"""
+currently has problems
+"""
 @bp.route("/read/<id>")
 def read(id):
     
