@@ -4,12 +4,12 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
-from EduProj.db import get_db
+from . import db
+from .models import Matrices
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import logging
-from EduProj.db import get_db
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -57,18 +57,15 @@ def create():
                 data += request.form["data"+str(i*cols+j)] + ","
         data = data[:-1]
         logging.info(data)
-        db = get_db()
+        
+        matrix = Matrices(rows = rows, cols = cols, data = data )
         error = None
         if not rows or not cols or not data:
             error = "All Values need to be filled"
         if error is None:
             try:
-                db.execute(
-                    "INSERT INTO matrices (rows, cols, data)"
-                    "VALUES (?, ?, ?)",
-                    (rows, cols, data)
-                )
-                db.commit()
+                db.session.add(matrix)
+                db.session.commit()
                 flash("created")
             except db.IntegrityError:
                 error = f"Matrix already exists"
@@ -82,44 +79,33 @@ def create():
 
 @bp.route("/read")
 def read():
-    db = get_db()
     matrices_processed = []
 
-    matrices = db.execute(
-        "SELECT * FROM matrices"
-    ).fetchall()
+    matrices = Matrices.query.all()
 
     if len(matrices) >= 1:
         returnMatrices = []
         for matrix in matrices:
             # no assignment to sql lite row, so new dictionary object needs to be constructed
-            matrices_processed.append({"id":matrix["id"],"data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows": matrix["rows"], "cols": matrix["cols"]})
+            matrices_processed.append({"id":matrix.id,"data":parseMatrixData(processMatrixData(matrix.data), matrix.rows, matrix.cols), "rows": matrix.rows, "cols": matrix.cols})
     
     
     return render_template("matrix/read.html", matrices=matrices_processed, cols_page=1)
 
 @bp.route("/read/<id>")
 def read_single(id):
-    db = get_db()
-    matrix = db.execute(
-        "SELECT * FROM matrices" 
-        " WHERE id=?",
-        (id,)
-    ).fetchone()
-    matrix_processed =  [{"id":matrix["id"], "data":parseMatrixData(processMatrixData(matrix["data"]), matrix["rows"], matrix["cols"]), "rows":matrix["rows"], "cols":matrix["cols"]}]
+    matrix = Matrices.query.filter_by(id=id).first()
+    matrix_processed =  [{"id":matrix.id, "data":parseMatrixData(processMatrixData(matrix.data), matrix.rows, matrix.cols), "rows":matrix.rows, "cols":matrix.cols}]
     return render_template("matrix/read.html", matrices = matrix_processed, cols_page=1)
 
 @bp.route("/update/<id>", methods=("GET", "POST"))
 def update(id):
-    db = get_db()
     if request.method == "POST":
         
-        matrix = db.execute("SELECT * FROM matrices "
-                            "WHERE id = ?",
-                            (id,)).fetchone()
+        matrix = Matrices.query.filter_by(id=id).first()
         if matrix is not None:
-            rowsOld = matrix["rows"]
-            colsOld = matrix["cols"]
+            rowsOld = matrix.rows
+            colsOld = matrix.cols
             rows = request.form["rows"]
             cols = request.form["cols"]
             data = ""
@@ -133,21 +119,20 @@ def update(id):
             data += request.form["data"+str(int(rows)*int(cols)-1)] if int(rowsOld)*int(colsOld) > int(rows)*int(cols) else "0"
                 
             logging.info(data)
-            db.execute("UPDATE matrices SET rows = ?, cols = ?, data = ? "
-                       "WHERE id = ?",
-                       (rows, cols, data, id))
-            db.commit()
+            matrix.rows = rows
+            matrix.cols = cols
+            matrix.data = data
+            db.session.commit()
             flash("Update successfull")
             return redirect(url_for("matrix.update", id=id))
         else:
             flash("Id doesn't exist")
     elif request.method == "GET":
-        matrix = db.execute("SELECT * FROM matrices WHERE id = ?",
-                   (id,)).fetchone()
-        data = matrix["data"]
-        if matrix["rows"] * matrix["cols"] > len(data.split(",")):
-            for i in range(matrix["rows"] * matrix["cols"]-len(data.split(","))):
+        matrix = Matrices.query.filter_by(id=id).first()
+        data = matrix.data
+        if matrix.rows * matrix.cols > len(data.split(",")):
+            for i in range(matrix.rows * matrix.cols - len(data.split(","))):
                 data += ",0"
-        data = parseMatrixData(processMatrixData(data), matrix["rows"], matrix["cols"])
-        return render_template("matrix/update.html", rows=matrix["rows"], cols=matrix["cols"], data=data, id=id, cols_page=1)
+        data = parseMatrixData(processMatrixData(data), matrix.rows, matrix.cols)
+        return render_template("matrix/update.html", rows=matrix.rows, cols=matrix.cols, data=data, id=id, cols_page=1)
 

@@ -4,16 +4,10 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
-from EduProj.db import get_db
+from . import db
+from .models import States, Matrices, Comments
 
 from werkzeug.security import check_password_hash, generate_password_hash
-
-from EduProj.db import get_db
-
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 class Matrix:
     def __init__(self, rows, cols, data):
@@ -21,8 +15,11 @@ class Matrix:
         self._cols = cols
         self._data = data
 
-    def __str__(self):
-        return "rows: " + str(self._rows) +"\n" + "cols: " + str(self._cols) +"\n" + str(self._data)
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
         
 
 def processMatrixData(dataString):
@@ -76,6 +73,8 @@ def create():
        
         matrix_id = request.form["matrix_id"]
         col_state = request.form["col_state"]
+        
+        
 
         logger.info(name)
        
@@ -87,32 +86,22 @@ def create():
             error = "You need a reference object"
 
         if error is None:
-            db = get_db()
             try: 
-                matrix = db.execute(
-                    "SELECT * FROM matrices "
-                    "WHERE id = ?",
-                    (matrix_id,)
-                ).fetchone()
-
-                cursor = db.execute(
-                    "INSERT INTO states (name, matrixId, col_state) " 
-                    "VALUES (?, ?, ?)",
-                    (name,matrix_id, col_state)
-                );
-                db.commit()
+                matrix = Matrices.query.filter_by(id=matrix_id).first()
                 
-                stateId = cursor.lastrowid
+                state = States(name = name, matrixId = matrix_id, col_state = col_state)
+
+                db.session.add(state)
+                db.session.commit()
+                
+                stateId = state.id
 
                 for comment in comments:
                     if comment == '':
                         continue;
-                    cursor = db.execute(
-                        "INSERT INTO comments (comment, stateId) "
-                        "VALUES (?,?)",
-                        (comment, stateId)
-                    )
-                db.commit()
+                    comment_obj = Comments(comment=comment, stateId=stateId)
+                    db.session.add(comment_obj)
+                db.session.commit()
                 print(comments)
 
                 flash("created")
@@ -129,7 +118,6 @@ def create():
 @bp.route("/read/<id>")
 def read(id):
     
-    db = get_db()
     returnMatrix = ""
     name = ""
     comment = ""
@@ -139,45 +127,36 @@ def read(id):
     cols_page = 0
     
     
-    state = db.execute(
-        "SELECT * FROM states WHERE id = ?",
-        (id)
-    ).fetchone()
+    state = States.query.filter_by(id=id).first()
     
     if not state is None:
-        returnMatrix = state["matrixId"]
-        name = state["name"]
+        returnMatrix = state.matrixId
+        name = state.name
 
-        comments = db.execute(
-            "SELECT * FROM comments WHERE stateId = ?",
-            (id,)
-        ).fetchall()
+        comments = Comments.query.filter_by(stateId = id).all()
 
        
 
         returnComments = []
         for comment in comments:
-            commentlines = comment["comment"].split(";")
+            commentlines = comment.comment.split(";")
             returnComments.append(commentlines)
         
-        cols_page = state["col_state"]
+        cols_page = state.col_state
 
         matrices = []
 
         for matrixId in returnMatrix.split(","):
-            matrix = db.execute(
-                "SELECT * FROM matrices WHERE id = ?",
-                (matrixId,)
-            ).fetchone()
+            matrix = Matrices.query.filter_by(id=matrixId).first()
             matrices.append(matrix)
 
         returnMatrices = []
         if matrices is not None:
             for matrix in matrices: 
                 
-                rows = matrix["rows"]
-                cols = matrix["cols"]
-                data = matrix["data"]
+                rows = matrix.rows
+                cols = matrix.rows
+                data = matrix.data
               
         
                 returnData = parseMatrixData(processMatrixData(data), rows, cols)

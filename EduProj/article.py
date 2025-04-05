@@ -4,12 +4,14 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response
 )
 
-from EduProj.db import get_db
+from . import db
+
+from .models import Articles
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import logging
-from EduProj.db import get_db
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,24 +49,15 @@ def create():
         name = request.form["name"]
         order = request.form["order"]
         
-
-        db = get_db()
         error = None
 
         if not name or not order:
             error = "All Values need to be filled"
 
         if error is None:
-            try:
-                db.execute(
-                    "INSERT INTO articles (name, stateOrder) "
-                    "VALUES (?, ?)",
-                    (name, order)
-                )
-                db.commit()
-                flash("created")
-            except db.IntegrityError:
-                error = f"article already exists"
+            new_article = Articles(name= name, stateOrder= order)
+            db.session.add(new_article)
+            db.session.commit()
         else:
             return redirect(url_for("article.display"))
         
@@ -74,10 +67,7 @@ def create():
 
 @bp.route("/")
 def read():
-    db = get_db()
-    articles = db.execute(
-        "SELECT * FROM articles"
-    ).fetchall()
+    articles= Articles.query.all()
     logging.info(articles)
 
     if articles is not None:
@@ -85,27 +75,19 @@ def read():
 
 @bp.route("/read/<id>")
 def article_view(id):
-    db = get_db()
     matrices_processed = []
 
-
-    article = db.execute(
-        "SELECT * FROM articles WHERE id = ?",
-        (id,)
-    ).fetchone()
+    article = Articles.query.filter_by(id=id).first()
 
     if not article is None:
-        session["order"] = article["stateOrder"]
+        session["order"] = article.stateOrder
         session["current"] = 0
-        session["name"] = article["name"]
+        session["name"] = article.name
 
     splitOrder = session["order"].split(",")
     logging.info(splitOrder)
-    state_first = db.execute(
-        "SELECT * FROM states WHERE id = ?",
-        (splitOrder[0],)
-    ).fetchone()
+    state_first = Articles.query.filter_by(id=splitOrder[0]).first()
 
     logger.info(matrices_processed)
-    return redirect(url_for("state.read", id=state_first["id"], cols_page=1))
+    return redirect(url_for("state.read", id=state_first.id, cols_page=1))
 
