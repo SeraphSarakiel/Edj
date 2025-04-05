@@ -2,19 +2,16 @@ from flask import (
     Blueprint, flash, render_template, request, jsonify, abort
 )
 from EduProj.db import get_db
+from EduProj.GraphGenerators import BasicGraph
 
 import logging
 
-import json
-
-from EduProj.GraphGenerators import BasicGraph
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 bp = Blueprint('graph', __name__, url_prefix = "/graph")
-
+"""
 @bp.route("/", methods = ["GET"])
 def getGraphs():
     db = get_db()
@@ -136,6 +133,7 @@ def deleteGraphbyId(id):
         return jsonify("deleted graph sucessfully")
     except db.IntegrityError:
             abort(500)
+"""
 
 @bp.route("/read/<id>", methods = ["GET"])
 def showGraph(id):    

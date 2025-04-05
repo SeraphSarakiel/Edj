@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Sign up{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Username</label>
+        <input name="Username" id="username" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+      <div class="flex flex-rows mb-5 mt-5">
+        <label for="rows" class="m-1 basis-40">Password</label>
+        <input name="Password" id="password" class="m-1 border-2 border-red-600 basis-40" required>
+      </div>
+    </div>
+    <input type="submit" value="Sign up">
+  </form>
+{% endblock %}
