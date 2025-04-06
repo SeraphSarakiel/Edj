@@ -8,9 +8,19 @@
 
 {% block content %}
 <script>
+
+
+
 function appendId() {
+   var id = this.innerText.split(" ")[0];
    var order = document.getElementById("order");
-   order.value += this.innerText[0] + ",";
+   if(order.value[order.value.length-1] !== "," &&
+      order.value.length !== 0) {
+      order.value += "," + id;
+   } else if(order.value.length === 0) {
+      order.value += id;
+   }
+   
    destroyPopup();
 }
 
@@ -22,56 +32,156 @@ function appendId() {
   function createPopup() {
     var popUpContainer = document.createElement("div");
     popUpContainer.id = "popup";
-    popUpContainer.style = "padding:5px;z-index:1;width:1000;height:1000;position:fixed;background-color:red;top:200px; left:200px;width:70%;";
-    document.body.insertBefore(popUpContainer, document.getElementById("nav"));
+    popUpContainer.style = "padding:5px;z-index:1;height:300px;position:fixed;background-color:red;top:350px; left:400px;width:40%;background-size:cover";
+   
+
     var closeButton = document.createElement("div");
     closeButton.onclick = destroyPopup;
     closeButton.style = "position:absolute; top:0; right:0;width:40px;background-color:white;z-index:2;height:40px;background-image:url('http://127.0.0.1:5000/static/closeIcon.png');background-size:contain;"
     closeButton.id = "closeButton";
     popUpContainer.appendChild(closeButton);
+
+    
+
+    var prevButton = document.createElement("div");
+    prevButton.onclick = ()=>{prevState('http://127.0.0.1:5000/state/read')};
+    prevButton.style = "position:absolute; top:250px; left:10px;width:40px;background-color:white;z-index:2;height:40px;background-image:url('http://127.0.0.1:5000/static/back.png');background-size:contain;"
+    prevButton.id = "prevButtonPage";
+
+    popUpContainer.appendChild(prevButton);
+
+    var nextButton = document.createElement("div");
+    nextButton.onclick = ()=>{nextState('http://127.0.0.1:5000/state/read')};
+    nextButton.style = "position:absolute; top:250px; right:10px;width:40px;background-color:white;z-index:2;height:40px;background-image:url('http://127.0.0.1:5000/static/forward.png');background-size:contain;"
+    nextButton.id = "nextBtnPage";
+    popUpContainer.appendChild(nextButton);
+
+    document.body.insertBefore(popUpContainer, document.getElementById("nav"));
+
     return popUpContainer;
   }
   
-  function showStates(url) {
+  function setCookie(cname, cvalue, exdays=1) {
+  
+  document.cookie = cname + "=" + cvalue + ";";
+}
+
+  function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+  } 
+
+  function nextState(url) {
+    var currentState = parseInt(getCookie("currentPage"));
+   
+    var maxState = parseInt(getCookie("size"));
+    if (currentState + 1 < maxState){
+      currentState += 1;
+      destroyPopup();
+      showStates(url, currentState);
+      setCookie("currentPage", currentState);
+      
+    }
+  }
+
+  function prevState(url) {
+    var currentState = parseInt(getCookie("currentPage"));
+   
+    var maxState = parseInt(getCookie("size"));
+    if (currentState - 1 >= 0){
+      currentState -= 1;
+      destroyPopup();
+      showStates(url, currentState);
+      setCookie("currentPage", currentState);
+      
+    }
+  }
+
+  function showStates(url, currentState = 0) {
+   
+
     var stateContainer = createPopup();
     var stateContainerSub = document.createElement("div");
     //var stateContainer = document.getElementById("stateContainer");
-    if(stateContainer.children.length != 1) {
-      stateContainer.children[1].remove();
+    if(stateContainer.children.length != 3) {
+      stateContainer.children[3].remove();
     } 
-
+    var chunkSize = 10;
     var lineContainer = document.createElement("div");
+
     var data = fetch(url)
               .then(response =>response.json())
               .then(data=>{
+        if(data.length<=chunkSize) {
         data.forEach(line => {
-          console.log(line)
-          lineContainer = document.createElement("div");
-          lineText = document.createElement("p");
-          lineText.innerText = line["id"] + " \ " + line["name"]
-          lineText.classList.add("hover:bg-red-300");
-          lineText.onclick=appendId;
-          lineContainer.append(lineText);
-          stateContainerSub.appendChild(lineContainer); 
-        })
+          appendLine(line, lineContainer, stateContainerSub);
+        })} else {
+          console.log(currentState)
+          var dataSlices = [];
+          for(var i = 0; i < data.length; i+=chunkSize) {
+            dataSlices.push(data.slice(i, i+chunkSize));
+          }
+          dataSlices[currentState].forEach(line => {
+            appendLine(line, lineContainer, stateContainerSub);
+          })
+          document.cookie = "size="+dataSlices.length;
+          document.cookie = "currentPage="+currentState;
+        }
     });
     stateContainer.appendChild(stateContainerSub);
   }
+
+  function appendLine(line, lineContainer, stateContainerSub) {
+          console.log(line)
+          lineContainer = document.createElement("div");
+          var lineText = document.createElement("p");
+          lineText.innerText = line["id"] + " \ " + line["name"]
+          lineText.classList.add("hover:bg-red-300");
+          lineText.classList.add("h-5");
+          lineText.onclick=appendId;
+          lineContainer.append(lineText);
+          stateContainerSub.appendChild(lineContainer); 
+  }
 </script>
-  <form method="post">
+  <form method="post" id="creationForm">
     <div class="bg-white">
         <div class="flex flex-row mb-5 mt-5">
         <label for="name" class="m-1 basis-40 font-sans text-s">Name</label>
         <input name="name" id="name" required class="basis-40 m-1 border-2 border-red-600 active:border-red-700">
-        <button onclick="showStates('http://127.0.0.1:5000/state/read')">Search States</button>
-        <div id="stateContainer"></div>
+        
         </div>
         <div class="flex flex-row mb-5 mt-5">
         <label for="order" class="m-1 basis-40 text-s">Order</label>
         <input name="order" id="order" requried class="basis-40 m-1 border-2 border-red-600 active:border-red-700">
+        <div onclick="showStates('http://127.0.0.1:5000/state/read')" style="background-image:url(http://127.0.0.1:5000/static/search.png);background-size:cover;width:30px;height:30px;"></div>
+        <div id="stateContainer"></div>
       </div>
       </div>
     <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
   </form>
   
+
+<script>
+  const input = document.getElementById("name");
+
+function validation(elem) {
+    elem.addEventListener('invalid', function (event) {
+        event.preventDefault();
+        elem.style = "border:1px solid red;"
+    });
+}
+
+validation(input);  
+</script>
 {% endblock %}
