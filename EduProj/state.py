@@ -11,6 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from EduProj.db import get_db
 
 import logging
+import json
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -53,6 +54,22 @@ def parseMatrixData(data, rows, cols):
 
 
 bp = Blueprint('state', __name__, url_prefix="/state")
+
+@bp.route('/read')
+def readAll():
+    error = None
+    if request.method == "GET":
+        db = get_db()
+        result = db.execute("SELECT * FROM states").fetchall()
+    return json.dumps(
+        [
+            {
+                "id":row["id"],
+                "name": row["name"]
+            } for row in result
+        ]   
+    )
+
 
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
