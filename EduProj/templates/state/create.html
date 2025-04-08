@@ -1,5 +1,6 @@
 <script>
   var i = 0;
+  var columns = 0;
   function addComment() {
     i += 1;
     let newCommentLabel = document.createElement("label");
@@ -16,6 +17,41 @@
     commentContainer.appendChild(newComment);
     
   }
+
+  function addMatrix() {
+    console.log(columns);
+    columns += 1;
+    var container = document.getElementById("stateContainer");
+
+    var matrixContainer = document.createElement("div");
+    matrixContainer.id = "matrixContainer";
+    container.appendChild(matrixContainer);
+
+    var commentContainer = document.createElement("div");
+    commentContainer.id = "commentContainer";
+    container.appendChild(commentContainer);
+    var addCommentButton = document.createElement("div");
+    addCommentButton.style = "background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block";
+    addCommentButton.onclick = addComment;
+    container.appendChild(addCommentButton);
+
+    var nameLabel = document.createElement("label");
+    var nameInput = document.createElement("input");
+
+    nameLabel.classList.add("m-1");
+    nameLabel.classList.add("basis-40");
+    nameLabel.innerHTML = "Name"
+
+    nameInput.classList.add("basis-40");
+    nameInput.classList.add("m-1");
+    nameInput.classList.add("border-2");
+    nameInput.classList.add("border-red-600");
+      
+
+
+    container.appendChild(nameLabel);
+    container.appendChild(nameInput);
+  }
 </script>
 
 {% extends 'base.html' %}
@@ -27,7 +63,13 @@
 
 
 {% block content %}
-  <form method="post">
+  <span>Matrix</span>
+  <div id="addButtonMatrix" onclick="addMatrix()" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
+  <span>Chart</span>
+  <div id="addButtonChart" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
+  <div id="stateContainer"></div>
+
+  <!--<form method="post">
     <div class="bg-white">
         <div class="flex flex-row mt-5 mb-5">
           <label for="matrix_id" class="m-1 basis-40">Id</label>
@@ -50,5 +92,5 @@
       </div>
     </div>
     <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
-  </form>
+  </form>-->
 {% endblock %}
