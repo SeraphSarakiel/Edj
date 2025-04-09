@@ -18,6 +18,19 @@
     
   }
 
+  function addLabelCss(label) {
+    label.classList.add("m-1");
+    label.classList.add("w-100");
+    
+  }
+
+  function addInputCss(input) {
+    input.classList.add("w-100");
+    input.classList.add("m-1");
+    input.classList.add("border-2");
+    input.classList.add("border-red-600");
+  }
+
   function addMatrix() {
     console.log(columns);
     columns += 1;
@@ -27,30 +40,47 @@
     matrixContainer.id = "matrixContainer";
     container.appendChild(matrixContainer);
 
-    var commentContainer = document.createElement("div");
-    commentContainer.id = "commentContainer";
-    container.appendChild(commentContainer);
-    var addCommentButton = document.createElement("div");
-    addCommentButton.style = "background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block";
-    addCommentButton.onclick = addComment;
-    container.appendChild(addCommentButton);
+    
+    
 
     var nameLabel = document.createElement("label");
     var nameInput = document.createElement("input");
 
-    nameLabel.classList.add("m-1");
-    nameLabel.classList.add("basis-40");
-    nameLabel.innerHTML = "Name"
-
-    nameInput.classList.add("basis-40");
-    nameInput.classList.add("m-1");
-    nameInput.classList.add("border-2");
-    nameInput.classList.add("border-red-600");
-      
-
-
+    addLabelCss(nameLabel)
+    addInputCss(nameInput);
+    
     container.appendChild(nameLabel);
     container.appendChild(nameInput);
+    nameLabel.innerHTML = "Name"
+
+    var colInput = document.createElement("input");
+    var colLabel = document.createElement("label");
+    var rowInput = document.createElement("input");
+    var rowLabel = document.createElement("label");
+
+    addLabelCss(colLabel);
+    addInputCss(colInput);
+    addLabelCss(rowLabel);
+    addInputCss(rowInput);
+
+    colLabel.innerHTML = "Columns";
+    rowLabel.innerHTML = "Rows";
+
+    container.appendChild(colLabel);
+    container.appendChild(colInput);
+    
+    
+    container.appendChild(rowLabel);
+    container.appendChild(rowInput);
+
+    var commentContainer = document.createElement("div");
+    commentContainer.id = "commentContainer";
+    container.appendChild(commentContainer);
+
+    var addCommentButton = document.createElement("div");
+    addCommentButton.style = "background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block";
+    addCommentButton.onclick = addComment;
+    container.appendChild(addCommentButton);
   }
 </script>
 
@@ -67,7 +97,7 @@
   <div id="addButtonMatrix" onclick="addMatrix()" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
   <span>Chart</span>
   <div id="addButtonChart" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
-  <div id="stateContainer"></div>
+  <div id="stateContainer" class="flex flex-col mb-5 mt-5 w-1/8"></div>
 
   <!--<form method="post">
     <div class="bg-white">
