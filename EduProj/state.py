@@ -61,13 +61,12 @@ bp = Blueprint('state', __name__, url_prefix="/state")
 def readAll():
     error = None
     if request.method == "GET":
-        db = get_db()
-        result = db.execute("SELECT * FROM states").fetchall()
+        result = States.query.all()
     return json.dumps(
         [
             {
-                "id":row["id"],
-                "name": row["name"]
+                "id":row.id,
+                "name": row.name
             } for row in result
         ]   
     )
