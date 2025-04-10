@@ -49,6 +49,11 @@ def create_app(test_config=None):
     with app.app_context():
         db.create_all()
         
+    from EduProj import commands
+    app.cli.add_command(commands.init_db)
+    app.cli.add_command(commands.populate_testdata)
+    app.cli.add_command(commands.LR_seeding)
+        
     import EduProj.auth as auth
     app.register_blueprint(auth.bp)
     

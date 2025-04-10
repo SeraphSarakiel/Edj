@@ -4,8 +4,8 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
-from . import db
-from .models import States, Matrices, Comments
+from EduProj import db
+from EduProj.models import States, Matrices, Comments
 
 from werkzeug.security import check_password_hash, generate_password_hash
 

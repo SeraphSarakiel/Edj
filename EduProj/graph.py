@@ -1,8 +1,8 @@
 from flask import (
     Blueprint, flash, render_template, request, jsonify, abort
 )
-from . import db
-from .models import Graphs
+from EduProj import db
+from EduProj.models import Graphs
 from EduProj.GraphGenerators import BasicGraph
 
 import logging
@@ -141,7 +141,7 @@ def showGraph(id):
     
     rawgraph = Graphs.query.filter_by(id=id).first()
     
-    graphGenerator = BasicGraph.BasicGraph(rawgraph)
+    graphGenerator = BasicGraph(rawgraph)
     graphProcessed = graphGenerator.generate()
     print(graphProcessed)
     
@@ -213,6 +213,6 @@ def updateGraphHTML(id):
     
     rawGraph = Graphs.query.filter_by(id=id).first()
         
-    graphProcessed = jsonify(rawGraph)
+    graphProcessed = rawGraph
     
     return render_template("graph/update.html", graphData = graphProcessed, cols_page = 1)

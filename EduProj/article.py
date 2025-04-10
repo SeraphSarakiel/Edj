@@ -4,9 +4,9 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response
 )
 
-from . import db
+from EduProj import db
 
-from .models import Articles
+from EduProj.models import Articles
 
 from werkzeug.security import check_password_hash, generate_password_hash
 

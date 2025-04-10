@@ -1,13 +1,15 @@
 import importlib.util
+import EduProj.__init__ as init
+import EduProj.db_old as db
 
-initspec = importlib.util.spec_from_file_location("__init__","./EduProj/__init__.py")
-dbspec = importlib.util.spec_from_file_location("db","./EduProj/db.py")
+#initspec = importlib.util.spec_from_file_location("__init__","./EduProj/__init__.py")
+#dbspec = importlib.util.spec_from_file_location("db","./EduProj/db.py")
 
-init = importlib.util.module_from_spec(initspec)
-db = importlib.util.module_from_spec(dbspec)
+#init = importlib.util.module_from_spec(initspec)
+#db = importlib.util.module_from_spec(dbspec)
 
-initspec.loader.exec_module(init)
-dbspec.loader.exec_module(db)
+#initspec.loader.exec_module(init)
+#dbspec.loader.exec_module(db)
 
 import pytest
 import os
