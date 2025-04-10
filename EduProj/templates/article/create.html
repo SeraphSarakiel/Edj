@@ -4,12 +4,67 @@
   {% block title %}Create an article{% endblock %}
 {% endblock %}
 
+
+
 {% block content %}
+<script>
+function appendId() {
+   var order = document.getElementById("order");
+   order.value += this.innerText[0] + ",";
+   destroyPopup();
+}
+
+  function destroyPopup() {
+    var popup = document.getElementById("popup");
+    popup.remove();
+  }
+
+  function createPopup() {
+    var popUpContainer = document.createElement("div");
+    popUpContainer.id = "popup";
+    popUpContainer.style = "padding:5px;z-index:1;width:1000;height:1000;position:fixed;background-color:red;top:200px; left:200px;width:70%;";
+    document.body.insertBefore(popUpContainer, document.getElementById("nav"));
+    var closeButton = document.createElement("div");
+    closeButton.onclick = destroyPopup;
+    closeButton.style = "position:absolute; top:0; right:0;width:40px;background-color:white;z-index:2;height:40px;background-image:url('http://127.0.0.1:5000/static/closeIcon.png');background-size:contain;"
+    closeButton.id = "closeButton";
+    popUpContainer.appendChild(closeButton);
+    return popUpContainer;
+  }
+  
+  function showStates(url) {
+    var stateContainer = createPopup();
+    var stateContainerSub = document.createElement("div");
+    //var stateContainer = document.getElementById("stateContainer");
+    if(stateContainer.children.length != 1) {
+      stateContainer.children[1].remove();
+    } 
+
+    var lineContainer = document.createElement("div");
+    var data = fetch(url)
+              .then(response =>response.json())
+              .then(data=>{
+        data.forEach(line => {
+          console.log(line)
+          lineContainer = document.createElement("div");
+          lineText = document.createElement("p");
+          lineText.innerText = line["id"] + " \ " + line["name"]
+          lineText.classList.add("hover:bg-red-300");
+          lineText.onclick=appendId;
+          lineContainer.append(lineText);
+          stateContainerSub.appendChild(lineContainer); 
+        })
+    });
+    stateContainer.appendChild(stateContainerSub);
+  }
+</script>
   <form method="post">
     <div class="bg-white">
         <div class="flex flex-row mb-5 mt-5">
         <label for="name" class="m-1 basis-40 font-sans text-s">Name</label>
         <input name="name" id="name" required class="basis-40 m-1 border-2 border-red-600 active:border-red-700">
+        <button onclick="showStates('http://127.0.0.1:5000/state/read')">Search States</button>
+        <div id="stateContainer"></div>
         </div>
         <div class="flex flex-row mb-5 mt-5">
         <label for="order" class="m-1 basis-40 text-s">Order</label>

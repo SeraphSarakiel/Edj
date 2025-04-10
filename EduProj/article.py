@@ -63,7 +63,7 @@ def create():
         
         flash(error)
         
-    return render_template("article/create.html", cols_page=1)
+    return render_template("article/create.html", cols_page=1, url=url_for("state.readAll"))
 
 @bp.route("/")
 def read():

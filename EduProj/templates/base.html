@@ -1,7 +1,7 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='output.css') }}">
-<nav class="grid-cols-6 grid-rows-3 bg-white w-full grid"  >
+<nav class="grid-cols-6 grid-rows-3 bg-white w-full grid" id="nav" >
 
   <a href="/" class="col-start-1 col-end-1 row-start-1 row-end-1 w-1/6"><img src="{{url_for('static', filename='icon_try.png')}}" class="w-20 h-20 z-1"/></a>
   <a class="col-start-2 col-end-2 row-start-1 row-end-1 p-2 h-20 w-1/6 hover:bg-red-300 bg-white border-t-2 border-b-2 border-l-2 border-red-600 items-center flex justify-center"href="/">Home</a>
