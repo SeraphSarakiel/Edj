@@ -6,18 +6,18 @@ class BasicGraph:
     
     def generate(self):
         graph_processed = {
-            "data" : {"grad": self.graph["grad"],
-                      "coeffizienten" : process_coef(self.graph["coeffizienten"])},
+            "data" : {"grad": self.graph.grad,
+                      "coeffizienten" : process_coef(self.graph.coeffizienten)},
             "option" : {
                 "xAxis": {
                 "name": "x",
-                "max": self.graph["max_x"],
-                "min": self.graph["min_x"]
+                "max": self.graph.max_x,
+                "min": self.graph.min_x
                 },
                 "yAxis": {
                 "name": "y",
-                "max": self.graph["max_y"],
-                "min": self.graph["min_y"]
+                "max": self.graph.max_y,
+                "min": self.graph.min_y
                 },
                 "series": [
                 {

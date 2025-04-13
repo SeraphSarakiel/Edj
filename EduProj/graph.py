@@ -1,7 +1,8 @@
 from flask import (
     Blueprint, flash, render_template, request, jsonify, abort
 )
-from EduProj.db import get_db
+from EduProj import db
+from EduProj.models import Graphs
 from EduProj.GraphGenerators import BasicGraph
 
 import logging
@@ -138,15 +139,9 @@ def deleteGraphbyId(id):
 @bp.route("/read/<id>", methods = ["GET"])
 def showGraph(id):    
     
-    db = get_db()
-
-    rawgraph = db.execute(
-        "SELECT * FROM graphs"
-        " WHERE id=?",
-        (id,)
-    ).fetchone()
+    rawgraph = Graphs.query.filter_by(id=id).first()
     
-    graphGenerator = BasicGraph.BasicGraph(rawgraph)
+    graphGenerator = BasicGraph(rawgraph)
     graphProcessed = graphGenerator.generate()
     print(graphProcessed)
     
@@ -162,7 +157,7 @@ def createGraph():
         grad = int(request.form["grad"])
         coef = request.form["coeffizienten"]
         
-        db = get_db()
+        graph = Graphs(max_x = max_x, min_x = min_x, max_y = max_y, min_y = min_y, grad = grad, coeffizienten = coef)
         error = None
 
         if  max_x is None or  min_x is None or  max_y is None or  min_y is None or  grad is None or  coef is None:
@@ -171,12 +166,8 @@ def createGraph():
             
         if error is None:
             try:
-                db.execute(
-                    "INSERT INTO graphs (max_x, min_x, max_y, min_y, grad, coeffizienten)"
-                    "VALUES (?, ?, ?, ?, ?, ?)",
-                    (max_x, min_x, max_y, min_y, grad, coef)
-                )
-                db.commit()
+                db.session.add(graph)
+                db.session.commit()
                 flash("created")
             except db.IntegrityError:
                 error = f"Graph already exists"
@@ -195,7 +186,8 @@ def updateGraphHTML(id):
         grad = int(request.form["grad"])
         coef = request.form["coeffizienten"]
         
-        db = get_db()
+        graph = Graphs.query.filter_by(id=id).first()
+        
         error = None
 
         if  max_x is None or  min_x is None or  max_y is None or  min_y is None or  grad is None or  coef is None:
@@ -204,12 +196,13 @@ def updateGraphHTML(id):
             
         if error is None:
             try:
-                db.execute(
-                    "UPDATE graphs SET max_x = ?, min_x = ?, max_y = ?, min_y = ?, grad = ?, coeffizienten = ?"
-                    "WHERE id = ?",
-                    (max_x, min_x, max_y, min_y, grad, coef, id)
-                )
-                db.commit()
+                graph.max_x = max_x
+                graph.min_x = min_x
+                graph.max_y = max_y
+                graph.min_y = min_y
+                graph.grad = grad
+                graph.coeffizienten = coef
+                db.session.commit()
                 flash("Update successfull")
             except db.IntegrityError:
                 error = f"Id doesn't exist"
@@ -217,15 +210,9 @@ def updateGraphHTML(id):
             abort(400,error)
         flash(error)
 
-    db = get_db()
-    rawGraph = db.execute("SELECT * FROM graphs WHERE id = ?",
-               (id,)).fetchone()
+    
+    rawGraph = Graphs.query.filter_by(id=id).first()
         
-    graphProcessed = {  "max_x" : rawGraph["max_x"],
-                        "min_x" : rawGraph["min_x"],
-                        "max_y" : rawGraph["max_y"],
-                        "min_y" : rawGraph["min_y"],
-                        "grad" : rawGraph["grad"],
-                        "coeffizienten" : rawGraph["coeffizienten"]
-                }
+    graphProcessed = rawGraph
+    
     return render_template("graph/update.html", graphData = graphProcessed, cols_page = 1)
