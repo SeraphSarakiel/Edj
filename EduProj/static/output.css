@@ -535,6 +535,9 @@
   .min-h-2 {
     min-height: calc(var(--spacing) * 2);
   }
+  .min-h-10 {
+    min-height: calc(var(--spacing) * 10);
+  }
   .min-h-screen {
     min-height: 100vh;
   }
@@ -1958,6 +1961,54 @@
   }
   .\[keywords\:node-addon-api\] {
     keywords: node-addon-api;
+  }
+  .\[ticket\:489\] {
+    ticket: 489;
+  }
+  .\[ticket\:1523\] {
+    ticket: 1523;
+  }
+  .\[ticket\:1570\] {
+    ticket: 1570;
+  }
+  .\[ticket\:1892\] {
+    ticket: 1892;
+  }
+  .\[ticket\:2229\] {
+    ticket: 2229;
+  }
+  .\[ticket\:2362\] {
+    ticket: 2362;
+  }
+  .\[ticket\:2406\] {
+    ticket: 2406;
+  }
+  .\[ticket\:2619\] {
+    ticket: 2619;
+  }
+  .\[ticket\:3208\] {
+    ticket: 3208;
+  }
+  .\[ticket\:3633\] {
+    ticket: 3633;
+  }
+  .\[ticket\:3725\] {
+    ticket: 3725;
+  }
+  .\[ticket\:3801\] {
+    ticket: 3801;
+  }
+  .\[ticket\:3989\] {
+    ticket: 3989;
+  }
+  .\[ticket\:4457\] {
+    ticket: 4457;
+  }
+  .\[ticket\:4730\] {
+    ticket: 4730;
+  }
+  .\[ticket\:10782\] {
+    ticket: 10782;
   }
   .backface-hidden {
     backface-visibility: hidden;

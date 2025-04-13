@@ -1,22 +1,9 @@
+<script src=" https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js "></script>
 <script>
-  var i = 0;
+  
+  var obj_num = 0;
   var columns = 0;
-  function addComment() {
-    i += 1;
-    let newCommentLabel = document.createElement("label");
-    newCommentLabel.innerHTML = "Comment "+i;
-    let newComment = document.createElement("input");
-    
-    
-    let commentContainer = document.getElementById("commentContainer");
-    newCommentLabel.classList = ["basis-10 m-1 flex-row-span-1"+ " flex-row-start-"+i]
-    newComment.classList = ["basis-10 m-1 border-2 border-red-600 flex-row-span-1 flex-row-start-"+i]
-    newComment.name = "comment"+i;
-    newComment.id = "comment"+i;
-    commentContainer.appendChild(newCommentLabel);
-    commentContainer.appendChild(newComment);
-    
-  }
+  
 
   function addLabelCss(label) {
     label.classList.add("m-1");
@@ -31,29 +18,180 @@
     input.classList.add("border-red-600");
   }
 
-  function addMatrix() {
-    console.log(columns);
-    columns += 1;
+  function appendInput(id, local_id) {
+    var input = document.createElement("input");
+    var container = document.getElementById("stateContainer");
+    input.id = id+"_"+local_id;
+    input.oninput = () => {handleGraph(local_id)}
+    addInputCss(input)
+    container.appendChild(input);
+  }
+
+  function appendLabel(id, text, local_id) {
+    var label = document.createElement("label");
+    var container = document.getElementById("stateContainer");
+    
+    label.innerHTML = text
+    label.id = id+"_"+local_id;
+    addLabelCss(label)
+    container.appendChild(label)
+  }
+
+  function processInputGraph(local_id) {
+    
+    var degree = document.getElementById("degreeInput_"+local_id)
+    var coefficient = document.getElementById("coefficientInput_"+local_id)
+    var maxX = document.getElementById("maxXInput_"+local_id)
+    var minX = document.getElementById("minXInput_"+local_id)
+    var maxY = document.getElementById("maxYInput_"+local_id)
+    var minY = document.getElementById("minYInput_"+local_id)
+
+    graph_processed = {
+            "data" : {"grad": degree.value,
+                      "coeffizienten" : coefficient.value.split(",")},
+            "option" : {
+                "xAxis": {
+                "name": "x",
+                "max": maxX.value,
+                "min": minX.value
+                },
+                "yAxis": {
+                "name": "y",
+                "max": maxY.value,
+                "min": minY.value,
+                },
+                "series": [
+                {
+                    "showSymbol": false,
+                    "type": "line"
+                }
+                ]
+            }
+        }
+        return graph_processed;
+  }
+
+  function handleGraph(local_id) {
+
+
+    var chart = echarts.init(document.getElementById("chartContainer_"+local_id));
+    var graphData = processInputGraph(local_id) //JSON.parse(
+    console.log(graphData.data.coeffizienten[0])
+
+    var option = graphData.option;
+
+    option.series[0].data = setData();
+
+    chart.setOption(option);
+
+  function setData() {
+    var results = [];
+    for (let i = option.xAxis.min; i <= option.xAxis.max; i += 0.1) {
+      results.push([i, func(i)]);
+    }
+    console.log(results)
+    return results;
+  }
+
+  function func(x) {
+    var result = 0;
+
+    for (let i = 0; i <= Number(graphData.data.grad); i++) {
+      result += Number(graphData.data.coeffizienten[i]) * x ** (Number(graphData.data.grad)-i);
+    }
+
+    return result
+  }
+
+  graphContainer.appendChild(graph)
+}
+
+  
+
+  function addGraph() {
+    var local_id = obj_num
+    
+    var obj_num_html = document.getElementById("obj_num")
+    obj_num_html.value = obj_num
+  
     var container = document.getElementById("stateContainer");
 
+    var header = document.createElement("h2");
+    header.innerHTML = "Graph "+obj_num;
+    container.appendChild(header);
+
+    var chartContainer = document.createElement("div");
+    chartContainer.id = "chartContainer_"+obj_num;
+    container.appendChild(chartContainer);
+
+    var Labels = []
+    var Inputs = []
+
+    appendLabel("maxXLabel", "Max X", local_id)    
+    appendInput("maxXInput",local_id)
+
+    appendLabel("minXLabel", "Min X",local_id)    
+    appendInput("minXInput",local_id)
+
+    appendLabel("maxYLabel", "Max Y",local_id)    
+    appendInput("maxYInput",local_id)
+
+    appendLabel("minYLabel", "Min Y",local_id)    
+    appendInput("minYInput",local_id)
+
+    appendLabel("minYLabel", "Min Y",local_id)    
+    appendInput("minYInput",local_id)
+
+    appendLabel("degreeLabel", "Degree",local_id)    
+    appendInput("degreeInput",local_id)
+
+    appendLabel("coefficientLabel", "Coefficient",local_id)    
+    appendInput("coefficientInput",local_id)
+
+ 
+
+    //var commentContainer = document.createElement("div");
+    //commentContainer.id = "commentContainer_"+obj_num;
+    //container.appendChild(commentContainer);
+
+    var commentLabel = document.createElement("label");
+    var commentInput = document.createElement("input");
+    addLabelCss(commentLabel);
+    addInputCss(commentInput);
+    commentLabel.innerHTML = "Comment";
+    container.appendChild(commentLabel)
+    container.appendChild(commentInput)
+
+    //var addCommentButton = document.createElement("div");
+    //addCommentButton.style = "background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block";
+    //addCommentButton.onclick = () => {addComment(obj_num)};
+    //container.appendChild(addCommentButton);
+    
+    obj_num += 1
+  }
+
+  function addMatrix() {
+    var local_id = obj_num
+    console.log(columns);
+    
+    var obj_num_html = document.getElementById("obj_num")
+    obj_num_html.value = obj_num
+  
+    var container = document.getElementById("stateContainer");
+
+    var header = document.createElement("h2");
+    header.innerHTML = "Matrix "+obj_num;
+    container.appendChild(header);
+
     var matrixContainer = document.createElement("div");
-    matrixContainer.id = "matrixContainer";
+    matrixContainer.id = "matrixContainer_"+obj_num;
     container.appendChild(matrixContainer);
 
    
-
+    
 
     
 
-    var nameLabel = document.createElement("label");
-    var nameInput = document.createElement("input");
-
-    addLabelCss(nameLabel)
-    addInputCss(nameInput);
-    
-    container.appendChild(nameLabel);
-    container.appendChild(nameInput);
-    nameLabel.innerHTML = "Name"
 
     var colInput = document.createElement("input");
     var colLabel = document.createElement("label");
@@ -68,10 +206,12 @@
     colLabel.innerHTML = "Columns";
     rowLabel.innerHTML = "Rows";
 
-    colInput.id = "cols"+i;
-    rowInput.id = "rows"+i;
-    colInput.oninput = () => {handleMatrix(i)};
-    rowInput.oninput = () => {handleMatrix(i)};
+    colInput.id = "cols_"+obj_num;
+    colInput.name = "cols_"+obj_num;
+    rowInput.id = "rows_"+obj_num;
+    rowInput.name = "rows_"+obj_num;
+    colInput.oninput = () => {handleMatrix(local_id)};
+    rowInput.oninput = () => {handleMatrix(local_id)};
 
 
     container.appendChild(colLabel);
@@ -83,37 +223,45 @@
 
     var dataContainer = document.createElement("div");
     var dataContainerNode = document.createElement("div");
-    dataContainer.id = "dataContainer";
-    dataContainerNode.id = "dataContainerNode";
+    dataContainer.id = "dataContainer_"+obj_num;
+    dataContainerNode.id = "dataContainerNode_"+obj_num;
     container.appendChild(dataContainerNode);
 
-    var commentContainer = document.createElement("div");
-    commentContainer.id = "commentContainer";
-    container.appendChild(commentContainer);
+    //var commentContainer = document.createElement("div");
+    //commentContainer.id = "commentContainer_"+obj_num;
+    //container.appendChild(commentContainer);
 
-    var addCommentButton = document.createElement("div");
-    addCommentButton.style = "background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block";
-    addCommentButton.onclick = addComment;
-    container.appendChild(addCommentButton);
+    var commentLabel = document.createElement("label");
+    var commentInput = document.createElement("input");
+    addLabelCss(commentLabel);
+    addInputCss(commentInput);
+    commentLabel.innerHTML = "Comment";
+    container.appendChild(commentLabel)
+    container.appendChild(commentInput)
 
+    //var addCommentButton = document.createElement("div");
+    //addCommentButton.style = "background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block";
+    //addCommentButton.onclick = () => {addComment(obj_num)};
+    //container.appendChild(addCommentButton);
     
+    obj_num += 1
   }
 
-function handleMatrix(i) {
+function handleMatrix(id) {
 
 console.log("called");
-console.log(i);
-let inputForm = document.getElementById("dataContainerNode");
-let inputData = document.getElementById("dataContainer");
+console.log(id);
+let inputForm = document.getElementById("dataContainerNode_"+id);
+let inputData = document.getElementById("dataContainer_"+id);
 if(inputData !== null) {
   inputData.remove();
 }
 
 
-let rows = document.getElementById("rows"+i).value;
-let cols = document.getElementById("cols"+i).value;
+let rows = document.getElementById("rows_"+id).value;
+let cols = document.getElementById("cols_"+id).value;
 let dataContainer = document.createElement('div');
-dataContainer.id = "dataContainer";
+dataContainer.id = "dataContainer_"+id;
 inputForm.appendChild(dataContainer);
 
 if(rows===""||cols==="") {
@@ -137,8 +285,8 @@ for(var i = 0; i < rows; i++) {
     currentCell.classList.add("border-amber-100")
     currentCell.classList.add("border-solid")
     currentCell.classList.add("border-2")
-    currentCell.id = "data"+(j+i*cols)
-    currentCell.name = "data"+(j+i*cols)
+    currentCell.id = "data_"+id + "_" + (j+i*cols)
+    currentCell.name = "data_"+id+"_"+(j+i*cols)
     currentRow.appendChild(currentCell);
     
   }
@@ -160,8 +308,11 @@ for(var i = 0; i < rows; i++) {
   <span>Matrix</span>
   <div id="addButtonMatrix" onclick="addMatrix()" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
   <span>Chart</span>
-  <div id="addButtonChart" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
+  <div id="addButtonChart" onclick="addGraph()" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
   <form method="post" id="inputForm">
+  <label for="name">Name</label>
+  <input name="obj_num" id="obj_num"  style="display:none" value="0"></input>
+  <input name="name" id="name" class="w-100 m-1 border-2 border-red-600"></input>
   <div id="stateContainer" class="flex flex-col mb-5 mt-5 w-1/8"></div>
 
   <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">

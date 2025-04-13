@@ -77,23 +77,59 @@ def create():
     error = None
     if request.method == 'POST':
         name = request.form["name"]
-        print("called")
-        print(name)
-        i = 0
+
+        obj_nums = int(request.form["obj_num"])
+    
         comments = []
 
         try:
-            while request.form["comment"+str(i)] != None:
-                comments.append(request.form["comment"+str(i)])
-                i += 1
+            comments.append(request.form["comment"])
         except:
             print("end reached")
 
         
+        matrix_ids = []
+        matrix_id = []
+        for obj_num in range(obj_nums+1):
+            rows = int(request.form["rows_"+str(obj_num)])
+            cols = int(request.form["cols_"+str(obj_num)])
+            data = ""
+        
+        
+            for i in range(int(rows)):
+                for j in range(int(cols)):
+                    data += request.form["data_"+str(obj_num)+"_"+str(i*cols+j)] + ","
+            data = data[:-1]
+            logging.info(data)
 
+            
+            matrix = Matrices(rows = rows, cols = cols, data = data )
+            error = None
+            if not rows or not cols or not data:
+                error = "All Values need to be filled"
+            if error is None:
+                try:
+                    db.session.add(matrix)
+                    db.session.commit()
+                    #db.session.refresh()
+                    matrix_id.append(matrix.id)
+                    print("returned id"+str(matrix_id))
+                except db.IntegrityError:
+                    error = f"Matrix already exists"
+            else:
+                flash("Matrix create"+error)  
+                return redirect(url_for("matrix.display"))
+            
+
+
+        matrix_id_string = ""
+        for id in matrix_id:
+            matrix_id_string += str(id) + ","
        
-        matrix_id = request.form["matrix_id"]
-        col_state = request.form["col_state"]
+        print(matrix_id)
+        matrix_id_string = matrix_id_string[:-1]
+        matrix_id = matrix_id_string
+        col_state = obj_nums
         
         
 
@@ -102,8 +138,10 @@ def create():
         logger.info(matrix_id)
 
         if not name: 
+            print(name)
             error = "Name must be filled"
         if not matrix_id: 
+            print(matrix_id)
             error = "You need a reference object"
 
         if error is None:
@@ -129,9 +167,10 @@ def create():
                 
 
             except Exception as e:
-                flash(e)
+                
+                flash("State create:"+e)
         else: 
-            flash(error)
+            flash("Generic: "+error)
 
         
     return render_template("state/create.html", cols_page=2)
