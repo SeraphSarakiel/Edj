@@ -40,7 +40,9 @@
     matrixContainer.id = "matrixContainer";
     container.appendChild(matrixContainer);
 
-    
+   
+
+
     
 
     var nameLabel = document.createElement("label");
@@ -66,12 +68,24 @@
     colLabel.innerHTML = "Columns";
     rowLabel.innerHTML = "Rows";
 
+    colInput.id = "cols"+i;
+    rowInput.id = "rows"+i;
+    colInput.oninput = () => {handleMatrix(i)};
+    rowInput.oninput = () => {handleMatrix(i)};
+
+
     container.appendChild(colLabel);
     container.appendChild(colInput);
     
     
     container.appendChild(rowLabel);
     container.appendChild(rowInput);
+
+    var dataContainer = document.createElement("div");
+    var dataContainerNode = document.createElement("div");
+    dataContainer.id = "dataContainer";
+    dataContainerNode.id = "dataContainerNode";
+    container.appendChild(dataContainerNode);
 
     var commentContainer = document.createElement("div");
     commentContainer.id = "commentContainer";
@@ -81,7 +95,57 @@
     addCommentButton.style = "background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block";
     addCommentButton.onclick = addComment;
     container.appendChild(addCommentButton);
+
+    
   }
+
+function handleMatrix(i) {
+
+console.log("called");
+console.log(i);
+let inputForm = document.getElementById("dataContainerNode");
+let inputData = document.getElementById("dataContainer");
+if(inputData !== null) {
+  inputData.remove();
+}
+
+
+let rows = document.getElementById("rows"+i).value;
+let cols = document.getElementById("cols"+i).value;
+let dataContainer = document.createElement('div');
+dataContainer.id = "dataContainer";
+inputForm.appendChild(dataContainer);
+
+if(rows===""||cols==="") {
+  return
+}
+
+let currentRow = null;
+let currentCell = null;
+console.log(rows);
+
+for(var i = 0; i < rows; i++) {
+  currentRow = document.createElement('div');
+  currentRow.classList.add("flex");
+  currentRow.classList.add("flex-rows");
+  currentRow.classList.add("mb-5");
+  currentRow.classList.add("mt-5");
+  dataContainer.appendChild(currentRow);
+  for(var j = 0; j < cols; j++) {
+    currentCell = document.createElement('input');
+    currentCell.classList.add("row-span1")
+    currentCell.classList.add("border-amber-100")
+    currentCell.classList.add("border-solid")
+    currentCell.classList.add("border-2")
+    currentCell.id = "data"+(j+i*cols)
+    currentCell.name = "data"+(j+i*cols)
+    currentRow.appendChild(currentCell);
+    
+  }
+}
+
+}
+
 </script>
 
 {% extends 'base.html' %}
@@ -97,8 +161,11 @@
   <div id="addButtonMatrix" onclick="addMatrix()" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
   <span>Chart</span>
   <div id="addButtonChart" style="background-image:url(http://127.0.0.1:5000/static/add.png);width:40px;height:40px;background-size:cover;display:inline-block"></div>
+  <form method="post" id="inputForm">
   <div id="stateContainer" class="flex flex-col mb-5 mt-5 w-1/8"></div>
 
+  <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
+</form>
   <!--<form method="post">
     <div class="bg-white">
         <div class="flex flex-row mt-5 mb-5">
