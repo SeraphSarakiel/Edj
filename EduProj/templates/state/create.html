@@ -46,9 +46,15 @@
     var maxY = document.getElementById("maxYInput_"+local_id)
     var minY = document.getElementById("minYInput_"+local_id)
 
-    graph_processed = {
+    if(degree.value !== "" &&
+       coefficient.value !== "" &&
+       maxX.value !== "" && 
+       minX.value !== "" &&
+       maxY.value !== "" &&
+       minY.value !== "") {
+        graph_processed = {
             "data" : {"grad": degree.value,
-                      "coeffizienten" : coefficient.value.split(",")},
+                      "coefficient" : coefficient.value.split(",")},
             "option" : {
                 "xAxis": {
                 "name": "x",
@@ -68,42 +74,62 @@
                 ]
             }
         }
+        console.log(graph_processed)
         return graph_processed;
+       } else {
+        return false;
+       }
+    
+
+    
   }
 
   function handleGraph(local_id) {
-
-
-    var chart = echarts.init(document.getElementById("chartContainer_"+local_id));
+    var chartContainer = document.getElementById("chartContainer_"+local_id)
+    var chart = echarts.getInstanceByDom(chartContainer)
+    if(chart) {
+      echarts.dispose(chart)
+    }
+    
     var graphData = processInputGraph(local_id) //JSON.parse(
-    console.log(graphData.data.coeffizienten[0])
+    if(graphData) {
+    
+      var chart = echarts.init(document.getElementById("chartContainer_"+local_id));
+  
 
-    var option = graphData.option;
+      var option = graphData.option;
 
-    option.series[0].data = setData();
-
-    chart.setOption(option);
+      option.series[0].data = setData();
+      console.log(option)
+      chart.setOption(option);
+    } 
+    
 
   function setData() {
     var results = [];
-    for (let i = option.xAxis.min; i <= option.xAxis.max; i += 0.1) {
+    for (let i = Number(option.xAxis.min); i <= Number(option.xAxis.max); i += 0.1) {
       results.push([i, func(i)]);
     }
-    console.log(results)
+
     return results;
   }
 
   function func(x) {
-    var result = 0;
-
-    for (let i = 0; i <= Number(graphData.data.grad); i++) {
-      result += Number(graphData.data.coeffizienten[i]) * x ** (Number(graphData.data.grad)-i);
+    
+    
+    var result = 0.0;
+    x = Number(x)
+    for (let i = 0; i < Number(graphData.data.grad); i++) {
+     
+      result += Number(graphData.data.coefficient[i]) * Number(x) ** (Number(graphData.data.grad)-i);
+      console.log(result)
     }
-
-    return result
+    
+    return Number(result)
+    
   }
 
-  graphContainer.appendChild(graph)
+  //chartContainer.appendChild(chart)
 }
 
   
@@ -122,6 +148,9 @@
 
     var chartContainer = document.createElement("div");
     chartContainer.id = "chartContainer_"+obj_num;
+    chartContainer.classList.add("w-100");
+    chartContainer.classList.add("h-100");
+    chartContainer.style="width:400px; height:400px;"
     container.appendChild(chartContainer);
 
     var Labels = []
@@ -139,8 +168,7 @@
     appendLabel("minYLabel", "Min Y",local_id)    
     appendInput("minYInput",local_id)
 
-    appendLabel("minYLabel", "Min Y",local_id)    
-    appendInput("minYInput",local_id)
+  
 
     appendLabel("degreeLabel", "Degree",local_id)    
     appendInput("degreeInput",local_id)
