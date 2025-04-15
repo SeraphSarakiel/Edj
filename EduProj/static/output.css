@@ -271,6 +271,9 @@
   .col-auto {
     grid-column: auto;
   }
+  .col-span-1 {
+    grid-column: span 1 / span 1;
+  }
   .col-span-3 {
     grid-column: span 3 / span 3;
   }
@@ -321,9 +324,6 @@
   }
   .row-start-2 {
     grid-row-start: 2;
-  }
-  .row-start-3 {
-    grid-row-start: 3;
   }
   .row-start-auto {
     grid-row-start: auto;
@@ -523,6 +523,9 @@
   .h-20 {
     height: calc(var(--spacing) * 20);
   }
+  .h-100 {
+    height: calc(var(--spacing) * 100);
+  }
   .h-screen {
     height: 100vh;
   }
@@ -534,9 +537,6 @@
   }
   .min-h-2 {
     min-height: calc(var(--spacing) * 2);
-  }
-  .min-h-10 {
-    min-height: calc(var(--spacing) * 10);
   }
   .min-h-screen {
     min-height: 100vh;
@@ -550,9 +550,6 @@
   .w-1\/6 {
     width: calc(1/6 * 100%);
   }
-  .w-1\/8 {
-    width: calc(1/8 * 100%);
-  }
   .w-8 {
     width: calc(var(--spacing) * 8);
   }
@@ -561,6 +558,9 @@
   }
   .w-65 {
     width: calc(var(--spacing) * 65);
+  }
+  .w-70 {
+    width: calc(var(--spacing) * 70);
   }
   .w-100 {
     width: calc(var(--spacing) * 100);
@@ -624,9 +624,6 @@
   }
   .basis-40 {
     flex-basis: calc(var(--spacing) * 40);
-  }
-  .basis-50 {
-    flex-basis: calc(var(--spacing) * 50);
   }
   .basis-64 {
     flex-basis: calc(var(--spacing) * 64);
@@ -833,6 +830,9 @@
   }
   .auto-rows-min {
     grid-auto-rows: min-content;
+  }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .grid-cols-6 {
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1961,54 +1961,6 @@
   }
   .\[keywords\:node-addon-api\] {
     keywords: node-addon-api;
-  }
-  .\[ticket\:489\] {
-    ticket: 489;
-  }
-  .\[ticket\:1523\] {
-    ticket: 1523;
-  }
-  .\[ticket\:1570\] {
-    ticket: 1570;
-  }
-  .\[ticket\:1892\] {
-    ticket: 1892;
-  }
-  .\[ticket\:2229\] {
-    ticket: 2229;
-  }
-  .\[ticket\:2362\] {
-    ticket: 2362;
-  }
-  .\[ticket\:2406\] {
-    ticket: 2406;
-  }
-  .\[ticket\:2619\] {
-    ticket: 2619;
-  }
-  .\[ticket\:3208\] {
-    ticket: 3208;
-  }
-  .\[ticket\:3633\] {
-    ticket: 3633;
-  }
-  .\[ticket\:3725\] {
-    ticket: 3725;
-  }
-  .\[ticket\:3801\] {
-    ticket: 3801;
-  }
-  .\[ticket\:3989\] {
-    ticket: 3989;
-  }
-  .\[ticket\:4457\] {
-    ticket: 4457;
-  }
-  .\[ticket\:4730\] {
-    ticket: 4730;
-  }
-  .\[ticket\:10782\] {
-    ticket: 10782;
   }
   .backface-hidden {
     backface-visibility: hidden;

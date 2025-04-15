@@ -2,6 +2,8 @@
 <script>
   
   var obj_num = 0;
+  var matrix_num = 0;
+  var chart_num = 0;
   var columns = 0;
   
 
@@ -132,10 +134,17 @@
   //chartContainer.appendChild(chart)
 }
 
-  
+function increaseChart() {
+    //Increases the chart counter by one and appends a chart character to the order input field.
+    //This is used for the backend to track which objects to create
+    chart_num += 1
+    var order = document.getElementById("obj_type");
+    order.innerHTML += order.innerHTML + "C;"
+  }
 
   function addGraph() {
     var local_id = obj_num
+    chart_num += 1
     
     var obj_num_html = document.getElementById("obj_num")
     obj_num_html.value = obj_num
@@ -198,8 +207,21 @@
     obj_num += 1
   }
 
+
+  function increaseMatrix() {
+    //Increases the matrix counter by one and appends a chart character to the order input field.
+    //This is used for the backend to track which objects to create
+    chartmatrix_num += 1
+    var order = document.getElementById("obj_type");
+    order.innerHTML += order.innerHTML + "M;"
+  }
+
   function addMatrix() {
     var local_id = obj_num
+    
+
+    increaseMatrix()
+
     console.log(columns);
     
     var obj_num_html = document.getElementById("obj_num")
@@ -209,10 +231,14 @@
 
     var header = document.createElement("h2");
     header.innerHTML = "Matrix "+obj_num;
+    header.classList.add("col-start-1")
+
     container.appendChild(header);
 
     var matrixContainer = document.createElement("div");
     matrixContainer.id = "matrixContainer_"+obj_num;
+    matrixContainer.classList.add("grid")
+    matrixContainer.classList.add("w-70")
     container.appendChild(matrixContainer);
 
    
@@ -222,9 +248,13 @@
 
 
     var colInput = document.createElement("input");
+    colInput.classList.add("col-start-2")
     var colLabel = document.createElement("label");
+    colLabel.classList.add("col-start-1")
     var rowInput = document.createElement("input");
+    rowInput.classList.add("col-start-2")
     var rowLabel = document.createElement("label");
+    rowLabel.classList.add("col-start-1")
 
     addLabelCss(colLabel);
     addInputCss(colInput);
@@ -251,8 +281,14 @@
 
     var dataContainer = document.createElement("div");
     var dataContainerNode = document.createElement("div");
+    dataContainer.classList.add("w-100")
+    dataContainer.classList.add("col-span-1")
+    dataContainer.classList.add("col-start-2")
     dataContainer.id = "dataContainer_"+obj_num;
     dataContainerNode.id = "dataContainerNode_"+obj_num;
+    dataContainerNode.classList.add("w-100")
+    dataContainerNode.classList.add("col-span-1")
+    dataContainerNode.classList.add("col-start-2")
     container.appendChild(dataContainerNode);
 
     //var commentContainer = document.createElement("div");
@@ -260,7 +296,9 @@
     //container.appendChild(commentContainer);
 
     var commentLabel = document.createElement("label");
+    commentLabel.classList.add("col-start-1")
     var commentInput = document.createElement("input");
+    commentInput.classList.add("col-start-2")
     addLabelCss(commentLabel);
     addInputCss(commentInput);
     commentLabel.innerHTML = "Comment";
@@ -340,8 +378,9 @@ for(var i = 0; i < rows; i++) {
   <form method="post" id="inputForm">
   <label for="name">Name</label>
   <input name="obj_num" id="obj_num"  style="display:none" value="0"></input>
+  <input name="obj_type" id="obj_type" style="display:none" value=""></input>
   <input name="name" id="name" class="w-100 m-1 border-2 border-red-600"></input>
-  <div id="stateContainer" class="flex flex-col mb-5 mt-5 w-1/8"></div>
+  <div id="stateContainer" class="grid grid-cols-2 grid-rows-3 mb-5 mt-5 w-100"></div>
 
   <input type="submit" value="Create" class="hover:bg-gray-100 m-1 border-2 border-gray-300">
 </form>

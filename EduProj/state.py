@@ -5,7 +5,7 @@ from flask import (
 )
 
 from EduProj import db
-from EduProj.models import States, Matrices, Comments
+from EduProj.models import States, Matrices, Comments, Graphs
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -76,7 +76,9 @@ def readAll():
 def create():
     error = None
     if request.method == 'POST':
+        print(request.form)
         name = request.form["name"]
+        order = request.form["obj_order"].split(";")
 
         obj_nums = int(request.form["obj_num"])
     
@@ -90,45 +92,88 @@ def create():
         
         matrix_ids = []
         matrix_id = []
+        graph_id = []
         for obj_num in range(obj_nums+1):
-            rows = int(request.form["rows_"+str(obj_num)])
-            cols = int(request.form["cols_"+str(obj_num)])
-            data = ""
-        
-        
-            for i in range(int(rows)):
-                for j in range(int(cols)):
-                    data += request.form["data_"+str(obj_num)+"_"+str(i*cols+j)] + ","
-            data = data[:-1]
-            logging.info(data)
+            
+            if order[obj_num] == "M":
 
+                rows = int(request.form["rows_"+str(obj_num)])
+                cols = int(request.form["cols_"+str(obj_num)])
+                data = ""
             
-            matrix = Matrices(rows = rows, cols = cols, data = data )
-            error = None
-            if not rows or not cols or not data:
-                error = "All Values need to be filled"
-            if error is None:
-                try:
-                    db.session.add(matrix)
-                    db.session.commit()
-                    #db.session.refresh()
-                    matrix_id.append(matrix.id)
-                    print("returned id"+str(matrix_id))
-                except db.IntegrityError:
-                    error = f"Matrix already exists"
-            else:
-                flash("Matrix create"+error)  
-                return redirect(url_for("matrix.display"))
             
+                for i in range(int(rows)):
+                    for j in range(int(cols)):
+                        data += request.form["data_"+str(obj_num)+"_"+str(i*cols+j)] + ","
+                data = data[:-1]
+                logging.info(data)
+
+                
+                matrix = Matrices(rows = rows, cols = cols, data = data )
+                error = None
+                if not rows or not cols or not data:
+                    error = "All Values need to be filled"
+                if error is None:
+                    try:
+                        db.session.add(matrix)
+                        db.session.commit()
+                        #db.session.refresh()
+                        matrix_id.append(matrix.id)
+                        print("returned id"+str(matrix_id))
+                    except db.IntegrityError:
+                        error = f"Matrix already exists"
+                else:
+                    flash("Matrix create"+error)  
+                    return redirect(url_for("matrix.display"))
+            elif order[obj_num] == "C":
+                minX = float(request.form["minXInput_"+str(obj_num)])
+                minY = float(request.form["minYInput_"+str(obj_num)])
+                maxX = float(request.form["maxXInput_"+str(obj_num)])
+                maxY = float(request.form["maxYInput_"+str(obj_num)])
+                degree = int(request.form["degreeInput_"+str(obj_num)])
+                coefficients = request.form["coefficientInput_"+str(obj_num)].split(",")
+            
+            
+                
+                
+                graph = Graphs(min_x = minX, max_x = maxX, min_y = minY, max_y = maxY, grad = degree, coeffizienten = coefficients)
+                error = None
+                if (not minX or 
+                   not minY or 
+                   not maxX or
+                   not maxY or 
+                   not degree or 
+                   not coefficients):
+                    error = "All Values need to be filled"
+                if error is None:
+                    try:
+                        db.session.add(graph)
+                        db.session.commit()
+                        #db.session.refresh()
+                        graph_id.append(graph.id)
+                        print("returned id"+str(graph_id))
+                    except db.IntegrityError:
+                        error = f"Graph already exists"
+                else:
+                    flash("Graph create"+error)  
+                    return redirect(url_for("graph.display"))
+
+                
 
 
         matrix_id_string = ""
+        graph_id_string = ""
         for id in matrix_id:
             matrix_id_string += str(id) + ","
+
+        for id in graph_id:
+            graph_id_string += str(id) + ","
        
         print(matrix_id)
         matrix_id_string = matrix_id_string[:-1]
+        graph_id_string = graph_id_string[:-1]
         matrix_id = matrix_id_string
+        graph_id = graph_id_string
         col_state = obj_nums
         
         
@@ -140,7 +185,8 @@ def create():
         if not name: 
             print(name)
             error = "Name must be filled"
-        if not matrix_id: 
+        if (not matrix_id or 
+           not graph_id): 
             print(matrix_id)
             error = "You need a reference object"
 
@@ -148,7 +194,7 @@ def create():
             try: 
                 matrix = Matrices.query.filter_by(id=matrix_id).first()
                 
-                state = States(name = name, matrixId = matrix_id, col_state = col_state)
+                state = States(name = name, matrixId = matrix_id, graphId = graph_id,col_state = col_state)
 
                 db.session.add(state)
                 db.session.commit()
