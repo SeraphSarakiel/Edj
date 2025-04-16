@@ -24,6 +24,7 @@
     var input = document.createElement("input");
     var container = document.getElementById("stateContainer");
     input.id = id+"_"+local_id;
+    input.name = id+"_"+local_id;
     input.oninput = () => {handleGraph(local_id)}
     addInputCss(input)
     container.appendChild(input);
@@ -35,6 +36,7 @@
     
     label.innerHTML = text
     label.id = id+"_"+local_id;
+    
     addLabelCss(label)
     container.appendChild(label)
   }
@@ -121,7 +123,7 @@
     
     var result = 0.0;
     x = Number(x)
-    for (let i = 0; i < Number(graphData.data.grad); i++) {
+    for (let i = 0; i <= Number(graphData.data.grad); i++) {
      
       result += Number(graphData.data.coefficient[i]) * Number(x) ** (Number(graphData.data.grad)-i);
       console.log(result)
@@ -139,13 +141,14 @@ function increaseChart() {
     //This is used for the backend to track which objects to create
     chart_num += 1
     var order = document.getElementById("obj_type");
-    order.innerHTML += order.innerHTML + "C;"
+    order.value += order.value + "C;"
   }
 
   function addGraph() {
     var local_id = obj_num
     chart_num += 1
-    
+    increaseChart();
+
     var obj_num_html = document.getElementById("obj_num")
     obj_num_html.value = obj_num
   
@@ -211,9 +214,9 @@ function increaseChart() {
   function increaseMatrix() {
     //Increases the matrix counter by one and appends a chart character to the order input field.
     //This is used for the backend to track which objects to create
-    chartmatrix_num += 1
+    matrix_num += 1
     var order = document.getElementById("obj_type");
-    order.innerHTML += order.innerHTML + "M;"
+    order.value += order.value + "M;"
   }
 
   function addMatrix() {

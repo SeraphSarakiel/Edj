@@ -27,7 +27,14 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
         
-
+def parseMatrixDataToString(rows, cols, requestForm, obj_num):
+    data = ""
+    for i in range(int(rows)):
+        for j in range(int(cols)):
+            data += requestForm["data_"+str(obj_num)+"_"+str(i*cols+j)] + ","
+    return data[:-1]
+    
+    
 def processMatrixData(dataString):
     """
         Processes the matrix data
@@ -72,59 +79,71 @@ def readAll():
     )
 
 
+
 @bp.route('/create', methods=('GET', 'POST'))
 def create():
     error = None
     if request.method == 'POST':
-        print(request.form)
-        name = request.form["name"]
-        order = request.form["obj_order"].split(";")
 
-        obj_nums = int(request.form["obj_num"])
-    
         comments = []
-
-        try:
-            comments.append(request.form["comment"])
-        except:
-            print("end reached")
-
-        
         matrix_ids = []
         matrix_id = []
         graph_id = []
-        for obj_num in range(obj_nums+1):
-            
-            if order[obj_num] == "M":
 
+        name = request.form["name"]
+
+        #holds order of object types (C = Chart, M = Matrix)
+        order = request.form["obj_type"].split(";")
+        obj_nums = int(request.form["obj_num"])
+        print("obj_nums")
+        print(obj_nums)
+        print("order")
+        print(order)
+
+        for obj_num in range(obj_nums+1):
+            if order[obj_num] == "M":
+                #Matrix Data definition
                 rows = int(request.form["rows_"+str(obj_num)])
                 cols = int(request.form["cols_"+str(obj_num)])
-                data = ""
-            
-            
-                for i in range(int(rows)):
-                    for j in range(int(cols)):
-                        data += request.form["data_"+str(obj_num)+"_"+str(i*cols+j)] + ","
-                data = data[:-1]
-                logging.info(data)
-
+                data = parseMatrixDataToString(rows, cols, request.form, obj_num)
+                dataNonString = data.split(",")
                 
+                
+                #Data Base Object
                 matrix = Matrices(rows = rows, cols = cols, data = data )
-                error = None
-                if not rows or not cols or not data:
+                print(matrix)
+
+                #Value check
+                if (not rows or 
+                    not cols or 
+                    not data):
                     error = "All Values need to be filled"
+                #Rows and Cols size check
+                if rows * cols != len(dataNonString):
+                    error = "Invalid Matrix dimensions"
+                #Datatype check
+                for dataField in dataNonString:
+                    try: 
+                        float(dataField)
+                    except e:
+                        error = "Only numbers allowed" 
+
                 if error is None:
                     try:
                         db.session.add(matrix)
                         db.session.commit()
-                        #db.session.refresh()
+                        
+                        #keep created ids
                         matrix_id.append(matrix.id)
-                        print("returned id"+str(matrix_id))
+                        print(matrix_id)
+                       
                     except db.IntegrityError:
                         error = f"Matrix already exists"
+                    except e:
+                        error = e
                 else:
-                    flash("Matrix create"+error)  
-                    return redirect(url_for("matrix.display"))
+                    flash("Matrix create: "+error)  
+                    return redirect(url_for("matrix.read"))
             elif order[obj_num] == "C":
                 minX = float(request.form["minXInput_"+str(obj_num)])
                 minY = float(request.form["minYInput_"+str(obj_num)])
@@ -138,26 +157,32 @@ def create():
                 
                 graph = Graphs(min_x = minX, max_x = maxX, min_y = minY, max_y = maxY, grad = degree, coeffizienten = coefficients)
                 error = None
-                if (not minX or 
-                   not minY or 
-                   not maxX or
-                   not maxY or 
-                   not degree or 
-                   not coefficients):
+                if (minX is None or 
+                    minY is None or 
+                    maxX is None or
+                    maxY is None or 
+                    degree is None or 
+                    coefficients is None):
                     error = "All Values need to be filled"
                 if error is None:
                     try:
                         db.session.add(graph)
+                        
                         db.session.commit()
-                        #db.session.refresh()
+                        
                         graph_id.append(graph.id)
                         print("returned id"+str(graph_id))
                     except db.IntegrityError:
                         error = f"Graph already exists"
                 else:
                     flash("Graph create"+error)  
-                    return redirect(url_for("graph.display"))
+                    return redirect(url_for("graph.showGraph", id=1))
 
+            #Comments for either Matrix or Chart
+            try:
+                comments.append(request.form["comment_"+obj_num])
+            except:
+                print("end reached")
                 
 
 
@@ -185,7 +210,7 @@ def create():
         if not name: 
             print(name)
             error = "Name must be filled"
-        if (not matrix_id or 
+        if (not matrix_id and
            not graph_id): 
             print(matrix_id)
             error = "You need a reference object"
