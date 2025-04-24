@@ -150,7 +150,7 @@ def create():
                 maxX = float(request.form["maxXInput_"+str(obj_num)])
                 maxY = float(request.form["maxYInput_"+str(obj_num)])
                 degree = int(request.form["degreeInput_"+str(obj_num)])
-                coefficients = request.form["coefficientInput_"+str(obj_num)].split(",")
+                coefficients = request.form["coefficientInput_"+str(obj_num)]
             
             
                 

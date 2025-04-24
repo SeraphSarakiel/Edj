@@ -139,9 +139,9 @@
 function increaseChart() {
     //Increases the chart counter by one and appends a chart character to the order input field.
     //This is used for the backend to track which objects to create
-    chart_num += 1
+    
     var order = document.getElementById("obj_type");
-    order.value += order.value + "C;"
+    order.value +=  "C;"
   }
 
   function addGraph() {
@@ -214,9 +214,9 @@ function increaseChart() {
   function increaseMatrix() {
     //Increases the matrix counter by one and appends a chart character to the order input field.
     //This is used for the backend to track which objects to create
-    matrix_num += 1
+
     var order = document.getElementById("obj_type");
-    order.value += order.value + "M;"
+    order.value += "M;"
   }
 
   function addMatrix() {
@@ -381,7 +381,7 @@ for(var i = 0; i < rows; i++) {
   <form method="post" id="inputForm">
   <label for="name">Name</label>
   <input name="obj_num" id="obj_num"  style="display:none" value="0"></input>
-  <input name="obj_type" id="obj_type" style="display:none" value=""></input>
+  <input name="obj_type" id="obj_type" style="display:none" value=""></input> 
   <input name="name" id="name" class="w-100 m-1 border-2 border-red-600"></input>
   <div id="stateContainer" class="grid grid-cols-2 grid-rows-3 mb-5 mt-5 w-100"></div>
 
