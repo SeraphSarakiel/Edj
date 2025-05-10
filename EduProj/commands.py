@@ -11,8 +11,10 @@ tables = [User, Matrices, Articles, States, Graphs, Comments]
 def init_db():
     with current_app.app_context():
         for table in tables:
-            db.session.query(table).delete()
-            db.session.commit()
+            db.metadata.drop_all(bind=db.engine,tables=[table.__table__])
+            #db.session.query(table).delete()
+            #db.session.commit()
+            
 
 @click.command('populate-testdata')
 def populate_testdata():
@@ -20,25 +22,38 @@ def populate_testdata():
         user1 = User(username="test", password=generate_password_hash("test"))
         db.session.add(user1)
         
-        matrix1 = Matrices(rows=3, cols=3, data="1,2,3,4,5,6,7,8,9")
-        matrix2 = Matrices(rows=4,cols=4,data="1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1")
+        matrix1 = Matrices(rows=3, cols=3, data="1,2,3,4,5,6,7,8,9") #, stateId = [1]
+        matrix2 = Matrices(rows=4,cols=4,data="1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1") #stateId = [2]
         db.session.add(matrix1)
         db.session.add(matrix2)
         
-        article1 = Articles(name="Test1", stateOrder="1,3,2")
-        article2 = Articles(name="Test2", stateOrder="1,2,3")
+        article1 = Articles(name="Test1")
+        article2 = Articles(name="Test2")
         db.session.add(article1)
         db.session.add(article2)
         
-        state1 = States(name="Test1", matrixId="1", articleId=1, col_state=1)
-        state2 = States(name="Test2", matrixId="1,2", articleId=2, col_state=2)
-        state3= States(name="Test3", graphId=2, matrixId="2,2,1", articleId=3,col_state=3)
+        state1 = States(name="Test1", col_state=1) #, matrixId=[1] 
+        state1.matrixId = [matrix1]
+        state1.order = "M"
+ 
+        state2 = States(name="Test2", col_state=2) #matrixId=[1,2]
+        state2.matrixId = [matrix1, matrix2]
+        state2.order = "M,M"
+
+        state3= States(name="Test3",  col_state=3) # matrixId=[2,2,1], graphId=[2],
+        state3.matrixId = [matrix2, matrix2, matrix1]
+        state3.order = "M,G,M,M"
+        
         db.session.add(state1)
         db.session.add(state2)
         db.session.add(state3)
+
+        article1.stateOrder = [state1, state3, state2]
+        article2.stateOrder = [state1, state2, state3]
         
         graph1 = Graphs(max_x=5, min_x=-5, max_y=5, min_y=-5, grad=1, coeffizienten="1,0")
         graph2 = Graphs(max_x=10, min_x=0, max_y=10, min_y=0, grad=2, coeffizienten="1,0,0")
+        state3.graphId = [graph2]
         db.session.add(graph1)
         db.session.add(graph2)
         
@@ -51,6 +66,8 @@ def populate_testdata():
         
         db.session.commit()
     
+
+
 @click.command('LR')
 def LR_seeding():
     with current_app.app_context():

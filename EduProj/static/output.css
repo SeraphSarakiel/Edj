@@ -415,8 +415,14 @@
   .mt-10 {
     margin-top: calc(var(--spacing) * 10);
   }
-  .mr-10 {
-    margin-right: calc(var(--spacing) * 10);
+  .mr-12 {
+    margin-right: calc(var(--spacing) * 12);
+  }
+  .mr-40 {
+    margin-right: calc(var(--spacing) * 40);
+  }
+  .mr-50 {
+    margin-right: calc(var(--spacing) * 50);
   }
   .mb-4 {
     margin-bottom: calc(var(--spacing) * 4);
@@ -517,6 +523,9 @@
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
+  .h-2\/3 {
+    height: calc(2/3 * 100%);
+  }
   .h-5 {
     height: calc(var(--spacing) * 5);
   }
@@ -541,14 +550,14 @@
   .min-h-screen {
     min-height: 100vh;
   }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
-  }
   .w-1\/2 {
     width: calc(1/2 * 100%);
   }
   .w-1\/6 {
     width: calc(1/6 * 100%);
+  }
+  .w-3\/4 {
+    width: calc(3/4 * 100%);
   }
   .w-8 {
     width: calc(var(--spacing) * 8);
@@ -588,9 +597,6 @@
   }
   .min-w-screen {
     min-width: 100vw;
-  }
-  .flex-1 {
-    flex: 1;
   }
   .flex-1\/6 {
     flex: calc(1/6 * 100%);
@@ -1454,6 +1460,9 @@
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
+  .pr-12 {
+    padding-right: calc(var(--spacing) * 12);
+  }
   .pb-2 {
     padding-bottom: calc(var(--spacing) * 2);
   }
@@ -2314,26 +2323,9 @@ span {
 input {
   display: inline;
 }
-.matrixForm {
-  display: block;
-  width: 20%;
-}
 .matrixSubmit {
   padding: 10px;
   margin-top: 20px;
-}
-.matrixRow {
-  width: 120px;
-  padding: 0;
-  border: 0;
-  display: flex;
-}
-.matrixCell {
-  display: inline-block;
-  width: 40px;
-  padding: 0;
-  margin: 0;
-  border: 0;
 }
 @property --tw-translate-x {
   syntax: "*";

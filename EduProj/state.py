@@ -1,12 +1,13 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
 
 from EduProj import db
 from EduProj.models import States, Matrices, Comments, Graphs
 
+from dataclasses import dataclass
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import logging
@@ -14,6 +15,23 @@ import json
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+class Graph:
+    def __init__(self, max_x, min_x, max_y, min_y, koeffizient, degree, graphNumber):
+        self.maxX = max_x
+        self.minX = min_x
+        self.maxY = max_y 
+        self.minY = min_y 
+        self.coefficient = koeffizient 
+        self.degree = degree
+        self.graphNumber = graphNumber
+
+    def toJSON(self):
+        return json.dumps(
+            self,
+            default=lambda o: o.__dict__, 
+            sort_keys=True,
+            indent=4)
 
 class Matrix:
     def __init__(self, rows, cols, data):
@@ -87,8 +105,8 @@ def create():
 
         comments = []
         matrix_ids = []
-        matrix_id = []
-        graph_id = []
+        matrices = []
+        graphs = []
 
         name = request.form["name"]
 
@@ -134,9 +152,7 @@ def create():
                         db.session.commit()
                         
                         #keep created ids
-                        matrix_id.append(matrix.id)
-                        print(matrix_id)
-                       
+                        matrices.append(matrix)
                     except db.IntegrityError:
                         error = f"Matrix already exists"
                     except e:
@@ -153,8 +169,6 @@ def create():
                 coefficients = request.form["coefficientInput_"+str(obj_num)]
             
             
-                
-                
                 graph = Graphs(min_x = minX, max_x = maxX, min_y = minY, max_y = maxY, grad = degree, coeffizienten = coefficients)
                 error = None
                 if (minX is None or 
@@ -170,8 +184,8 @@ def create():
                         
                         db.session.commit()
                         
-                        graph_id.append(graph.id)
-                        print("returned id"+str(graph_id))
+                        graphs.append(graph)
+                       
                     except db.IntegrityError:
                         error = f"Graph already exists"
                 else:
@@ -186,40 +200,31 @@ def create():
                 
 
 
-        matrix_id_string = ""
-        graph_id_string = ""
-        for id in matrix_id:
-            matrix_id_string += str(id) + ","
-
-        for id in graph_id:
-            graph_id_string += str(id) + ","
        
-        print(matrix_id)
-        matrix_id_string = matrix_id_string[:-1]
-        graph_id_string = graph_id_string[:-1]
-        matrix_id = matrix_id_string
-        graph_id = graph_id_string
+    
         col_state = obj_nums
         
         
 
         logger.info(name)
        
-        logger.info(matrix_id)
+        
 
         if not name: 
             print(name)
             error = "Name must be filled"
-        if (not matrix_id and
-           not graph_id): 
-            print(matrix_id)
+        if (not matrices and
+           not graphs): 
             error = "You need a reference object"
 
         if error is None:
             try: 
-                matrix = Matrices.query.filter_by(id=matrix_id).first()
-                
-                state = States(name = name, matrixId = matrix_id, graphId = graph_id,col_state = col_state)
+                #matrix = Matrices.query.filter_by(id=matrix_id).first()
+                orderString = ""
+                for object in order: 
+                    orderString += object + ","
+                orderString = orderString[:-1]
+                state = States(name = name, matrixId = matrices, graphs = graphs,col_state = col_state, order = orderString)
 
                 db.session.add(state)
                 db.session.commit()
@@ -239,12 +244,17 @@ def create():
 
             except Exception as e:
                 
-                flash("State create:"+e)
+                flash("State create:"+str(e))
         else: 
             flash("Generic: "+error)
 
         
     return render_template("state/create.html", cols_page=2)
+
+
+
+
+ 
 
 """
 currently has problems
@@ -259,16 +269,17 @@ def read(id):
     rows = 0    
     cols = 0    
     cols_page = 0
-    
+    returnData = ""
     
     state = States.query.filter_by(id=id).first()
     
     if not state is None:
         returnMatrix = state.matrixId
+        returnGraphs = state.graphs
         name = state.name
-
+        order = state.order
         comments = Comments.query.filter_by(stateId = id).all()
-
+        returnGraphsObject = []
        
 
         returnComments = []
@@ -279,28 +290,53 @@ def read(id):
         cols_page = state.col_state
 
         matrices = []
+        graphs = []
 
-        for matrixId in returnMatrix.split(","):
-            matrix = Matrices.query.filter_by(id=matrixId).first()
-            matrices.append(matrix)
+        for matrixId in returnMatrix:
+            matrices.append(matrixId)
+
+        for graphId in returnGraphs:
+            graphs.append(graphId)
+
+        
 
         returnMatrices = []
-        if matrices is not None:
-            for matrix in matrices: 
+        if matrices is not None or graphs is not None:
+            if matrices is not None:
+                for matrix in matrices: 
                 
-                rows = matrix.rows
-                cols = matrix.rows
-                data = matrix.data
-              
-        
-                returnData = parseMatrixData(processMatrixData(data), rows, cols)
-              
-                currentMatrix = Matrix(rows, cols, returnData)
-                returnMatrices.append(currentMatrix)
-        
-               
-        
-            return render_template("state/read.html", returnMatrices = returnMatrices ,matrix = returnData, cols = int(cols), rows = int(rows), comments=returnComments, name=name, cols_page=cols_page)
+                    rows = matrix.rows
+                    cols = matrix.rows
+                    data = matrix.data
+            
+                    returnData = parseMatrixData(processMatrixData(data), rows, cols)
+                
+                    currentMatrix = Matrix(rows, cols, returnData)
+                    returnMatrices.append(currentMatrix)
+            else:
+                returnMatrices = []
+            graphCounter = 0
+            if graphs is not None:
+                for graph in graphs:
+                    returnGraphsObject.append(Graph(graph.max_x, 
+                                              graph.min_x,
+                                              graph.max_y,
+                                              graph.min_y,
+                                              graph.coeffizienten,
+                                              graph.grad, 
+                                              graphCounter).toJSON())
+                    graphCounter += 1
+            else: 
+                returnGraphs = []
+            
+
+            return render_template("state/read.html", returnMatrices = returnMatrices,
+                                                      returnGraphs = returnGraphsObject, 
+                                                      matrix = returnData,
+                                                      comments=returnComments, 
+                                                      name=name, 
+                                                      cols_page=cols_page, 
+                                                      order=order)
         else:
             flash("No matrix with id" + str(returnMatrix))
             return redirect(url_for("matrix.create"))

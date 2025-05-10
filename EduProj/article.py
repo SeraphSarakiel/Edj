@@ -6,7 +6,7 @@ from flask import (
 
 from EduProj import db
 
-from EduProj.models import Articles
+from EduProj.models import Articles, States
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -47,17 +47,26 @@ bp = Blueprint('article', __name__)
 def create():
     if request.method == 'POST':
         name = request.form["name"]
-        order = request.form["order"]
+        order = request.form["order"].split(",")
+        stateOrder = []
+        for state in order:
+            stateObject = States.query.filter_by(id=state).first()
+            stateOrder.append(stateObject)
         
+        
+
+
+
         error = None
 
         if not name or not order:
             error = "All Values need to be filled"
 
         if error is None:
-            new_article = Articles(name= name, stateOrder= order)
+            new_article = Articles(name= name, stateOrder= stateOrder)
             db.session.add(new_article)
             db.session.commit()
+            flash("article created")
         else:
             return redirect(url_for("article.display"))
         
@@ -78,16 +87,20 @@ def article_view(id):
     matrices_processed = []
 
     article = Articles.query.filter_by(id=id).first()
+    order = ""
 
     if not article is None:
-        session["order"] = article.stateOrder
+        for state in article.stateOrder:
+            order += str(state.id) + ","
         session["current"] = 0
         session["name"] = article.name
 
+    session["order"] = order[:-1]
     splitOrder = session["order"].split(",")
-    logging.info(splitOrder)
+    print("session order")
+    print(session["order"])
     state_first = Articles.query.filter_by(id=splitOrder[0]).first()
 
-    logger.info(matrices_processed)
+    #logger.info(matrices_processed)
     return redirect(url_for("state.read", id=state_first.id, cols_page=1))
 
