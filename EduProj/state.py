@@ -9,12 +9,37 @@ from EduProj.models import States, Matrices, Comments, Graphs
 
 from dataclasses import dataclass
 from werkzeug.security import check_password_hash, generate_password_hash
+import jsonpickle
+
 
 import logging
 import json
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+class State: 
+    def __init__(self,state):
+        self._id = state.id
+        self._name = state.name
+        self._matrixId = state.matrixId
+        self._graphs = state.graphs
+        self._articleId = state.articleId
+        self._col_state = state.col_state
+        self._order = state.order
+        self._comments = state.comments
+        
+
+    def __str__(self):
+        ret = ""
+        for s in self.__dict__:
+            print(s.__dict__)
+            ret += s
+        return s
+
+    def toJSON(self):
+        return json.dumps(json.loads(jsonpickle.encode(self)), indent=4)
+  
 
 class Graph:
     def __init__(self, max_x, min_x, max_y, min_y, koeffizient, degree, graphNumber):
@@ -27,11 +52,7 @@ class Graph:
         self.graphNumber = graphNumber
 
     def toJSON(self):
-        return json.dumps(
-            self,
-            default=lambda o: o.__dict__, 
-            sort_keys=True,
-            indent=4)
+        return json.dumps(json.loads(jsonpickle.encode(self)), indent=4)
 
 class Matrix:
     def __init__(self, rows, cols, data):
@@ -273,6 +294,8 @@ def read(id):
     
     state = States.query.filter_by(id=id).first()
     
+    print(State(state).toJSON())
+
     if not state is None:
         returnMatrix = state.matrixId
         returnGraphs = state.graphs
@@ -336,7 +359,7 @@ def read(id):
                                                       comments=returnComments, 
                                                       name=name, 
                                                       cols_page=cols_page, 
-                                                      order=order)
+                                                      order=order.split(","))
         else:
             flash("No matrix with id" + str(returnMatrix))
             return redirect(url_for("matrix.create"))
@@ -344,6 +367,17 @@ def read(id):
     else: 
         flash("No State with this ID")
         return redirect(url_for("state.create"))
+    
+@bp.route('/read/json/<id>')
+def readJson(id):
+    state = States.query.filter_by(id=id).first()
+    if not state is None:
+        state_obj = State(state)
+        return "<pre>"+state_obj.toJSON()+"</pre>"
+    else:
+        flash("No State with this id " + str(id))
+        return redirect(url_for("state.create"))
+
 
 @bp.route("/next")
 def next():

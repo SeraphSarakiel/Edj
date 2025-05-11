@@ -115,31 +115,30 @@ function func(x) {
       <h1>Step {{session["current"] + 1}} </h1>
     </div>
   </header>
-  <div id="MatChaContainer" class="h-2/3 grid grid-cols-{{order}}">
+  <div id="MatChaContainer" class="h-2/3 grid grid-cols-{{order | length}}">
+  {% set ns1 = namespace(matrix_counter = 0) %}
+  {% set ns2 = namespace(graphs_counter = 0) %}
   {% for obj_type in order %}
-    {% set matrix_counter = 0 %}
-    {% set graphs_counter = 0 %}
     {% if obj_type == 'M' %}
-      
-        <div class="col-start-{{loop.index}} row-start-{{graphs_counter}} grid grid-cols-{{returnMatrices[matrix_counter]._cols}} grid-rows-{{returnMatrices[matrix_counter]._rows}} grid pr-12 h-100">
+        <div class="col-start-{{ns1.matrix_counter + ns2.graphs_counter}} grid grid-cols-{{returnMatrices[ns1.matrix_counter]._cols}} grid-rows-{{returnMatrices[ns1.matrix_counter]._rows}} grid pr-12 h-100">
           <form method="post" name="" class="inline-block">
-          {% for i in range(returnMatrices[matrix_counter]._cols) %}
+          {% for i in range(returnMatrices[ns1.matrix_counter]._cols) %}
             <div class="inline-block">
-            {% for j in range(returnMatrices[matrix_counter]._rows) %}
-              <input class="min-w-8 w-8" name="value{{i*3+j}} inline" value={{ returnMatrices[matrix_counter]._data[i][j] }}>
+            {% for j in range(returnMatrices[ns1.matrix_counter]._rows) %}
+              <input class="min-w-8 w-8" name="value{{i*3+j}} inline" value={{ returnMatrices[ns1.matrix_counter]._data[i][j] }}>
             {% endfor %}
             </div>
           {% endfor %}
           <input class="invis" type="submit">
           </form>
-      {% set matrix_counter = matrix_counter + 1 %}
-      {% elif obj_type == 'G' %}
-        <div id="chartContainer_{{matrix_counter}}" class="grid grid-cols-{{returnGraphs | length}} grid-rows-2 w-full h-100 row-start-{{graph_counter}} pr-12">
+      {% set ns1.matrix_counter = ns1.matrix_counter + 1 %}
+      {% elif obj_type == 'C' %}
+        <div id="chartContainer_{{ns2.graphs_counter}}" class="grid grid-cols-{{returnGraphs | length}} grid-rows-2 w-full h-100 col-start-{{ns1.matrix_counter + ns2.graphs_counter}} pr-12">
           <script>
-            handleGraph(({{returnGraphs[matrix_counter] | tojson}}))
+            handleGraph(({{returnGraphs[ns2.graphs_counter] | tojson}}))
           </script>
         </div>
-      {% set graphs_counter = graphs_counter + 1  %}
+        {% set ns2.graphs_counter = ns2.graphs_counter + 1 %}
       {% endif %}
     
       <div class="col-start-{{loop.index}} row-start-2 row-span-1 inline">

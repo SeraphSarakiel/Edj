@@ -44,7 +44,6 @@ class States(db.Model):
     order = db.Column(db.String(100))
     comments = db.relationship('Comments')
     
-@dataclass
 class Graphs(db.Model):
     __tablename__ = 'graphs'
     id = db.Column(db.Integer, primary_key=True)
